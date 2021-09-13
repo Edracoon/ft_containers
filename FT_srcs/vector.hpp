@@ -83,15 +83,34 @@ namespace ft
 				// ============
 				// === SIZE ===
 				// ============
-				size_type	size() const
-				{
+				size_type	size() const {
 					return (this->_endpointer - this->_startpointer);
 				}
-				size_type capacity() const
-				{
+				size_type capacity() const {
 					return (this->_capacity);
 				}
 
+				void resize (size_type n, value_type val = value_type())
+				{
+					(void)val;
+					std::cout << "ok" << std::endl;
+					if (n < (this->size()))
+					{
+						for ( pointer it = this->_startpointer + n ; it != this->size() ; it++ )
+							this->_allocator.destroy(it);
+						this->_endpointer = this->_startpointer + n;
+					}
+					std::cout << "ok1" << std::endl;
+					//else if (n > (this->size()))
+						// alloc la place manquante ?
+					this->_endpointer		= _startpointer + n;
+					// while (n >= )
+					// {
+					// 	_allocator.construct(_endpointer, (const_reference)val);
+					// 	_endpointer++;
+					// 	n--;
+					// }
+				}
 				void push_back (const value_type& val)
 				{
 					_allocator.construct(_endpointer, (const_reference)val);
