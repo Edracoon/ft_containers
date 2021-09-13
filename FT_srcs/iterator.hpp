@@ -25,13 +25,13 @@ namespace ft
 				typedef T*			pointer;
 				pointer				_pointer;
 		public:
-				random_access_iterator( void ) { _pointer = NULL; }			// default
-				random_access_iterator( pointer pointer ) { _pointer = pointer; }	
-				random_access_iterator( const T& rhs ) { *this = rhs; }		// copy
-				~random_access_iterator( void ) {  }						// destruct
+				random_access_iterator( void ) { _pointer = NULL; }					// default
+				random_access_iterator( pointer pointer ) { _pointer = pointer; }	// param
+				random_access_iterator( const T& rhs ) { *this = rhs; }				// copy
+				~random_access_iterator( void ) {  }								// destruct
 
 				random_access_iterator&		operator=( const random_access_iterator& rhs )	// assignation
-				{ this->_pointer = rhs._pointer; }
+				{ this->_pointer = rhs._pointer; return (*this); }
 
 				T&	operator* () {
 					return (*_pointer);

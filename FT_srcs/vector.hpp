@@ -39,6 +39,7 @@ namespace ft
 					pointer			_endpointer;	// last elem
 					pointer			_endmaxpointer;	// double size in case of reallocation
 					allocator_type	_allocator;		// allocateur selon son type pour utiliser ses fonctions
+					size_type		_capacity;
 		public:
 				explicit	// Default
 				vector (const allocator_type& alloc = allocator_type())
@@ -47,12 +48,14 @@ namespace ft
 					this->_startpointer		= NULL;
 					this->_endpointer		= NULL;
 					this->_endmaxpointer	= NULL;
+					this->_capacity			= 0;
 				}
 				explicit	// param
 				vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 				{
 					this->_allocator		= alloc;
-					this->_startpointer		= this->_allocator.allocate(n);
+					this->_capacity			= n;
+					this->_startpointer		= this->_allocator.allocate(_capacity);
 					this->_endpointer		= _startpointer;
 					this->_endmaxpointer	= _endpointer + n;
 					while (n)
@@ -67,15 +70,33 @@ namespace ft
 					(void)x;
 				}
 
-				iterator	begin( void )
-				{
+				// ===================
+				// === BEGIN | END ===
+				// ===================
+				iterator	begin( void ) const {
 					return (iterator(this->_startpointer));
 				}
-				iterator	end( void )
-				{
+				iterator	end( void ) const {
 					return (iterator(this->_endpointer));
 				}
 
+				// ============
+				// === SIZE ===
+				// ============
+				size_type	size() const
+				{
+					return (this->_endpointer - this->_startpointer);
+				}
+				size_type capacity() const
+				{
+					return (this->_capacity);
+				}
+
+				void push_back (const value_type& val)
+				{
+					_allocator.construct(_endpointer, (const_reference)val);
+					_endpointer++;
+				}
 	};
 }
 

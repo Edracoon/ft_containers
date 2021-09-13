@@ -27,7 +27,14 @@ $(FT_NAME):		$(FT_OBJS)
 $(STL_NAME):	$(STL_OBJS)
 				$(CXX) $(CXXFLAGS) $(STL_OBJS) -o $(STL_NAME)
 
+diff:		re
+			./$(FT_NAME) > FT.log
+			./$(STL_NAME) > STL.log
+			diff FT.log STL.log > ft-stl.diff
+			cat ft-stl.diff
+
 clean:
+			rm -rf $(wildcard *.log *.diff)
 			rm -rf $(FT_OBJS)
 			rm -rf $(STL_OBJS)
 
