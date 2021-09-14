@@ -65,7 +65,7 @@ namespace ft
 						n--;
 					}
 				}
-				vector (const vector& x)	// copy
+				vector (const vector& x) // copy
 				{
 					(void)x;
 				}
@@ -94,22 +94,62 @@ namespace ft
 					return (this->_capacity);
 				}
 
+				// ===============
+				// === RESERVE ===
+				// ===============
+				void reserve (size_type n)
+				{
+					pointer	oldstart			= this->_startpointer;
+					size_type oldsize			= this->size();
+					size_type oldcapacity		= this->capacity();
+					if (n <= this->capacity())
+						return ;
+					_capacity = n;
+					this->_startpointer		= _allocator.allocate(n);
+					this->_endpointer		= _startpointer + n;
+					this->_endmaxpointer	= _startpointer + _capacity;
+
+					size_type i = 0;
+					// construction avec la new taille
+					for ( ; i < oldsize ; i++ ) {
+						_allocator.construct(_startpointer + i, oldstart[i]);
+					}
+					// destruction du content precedent
+					for (size_type j = 0; j != i ; j++) {
+						_allocator.destroy(oldstart + j);
+					}
+					_allocator.deallocate(oldstart, oldcapacity);
+				}
+
+				// ==============
+				// === RESIZE ===
+				// ==============
 				void resize (size_type n, value_type val = value_type())
 				{
+					pointer	oldstart			= this->_startpointer;
+					size_type oldsize			= this->size();
+					size_type oldcapacity		= this->capacity();
+					
 					if (n < (this->size()))
 					{
 						for ( pointer it = this->_startpointer + n ; it != this->_endpointer ; it++ )
 							this->_allocator.destroy(it);
-						this->_endpointer = this->_startpointer + n;
+						this->_endpointer		= this->_startpointer + n;
+						return ;
 					}
-					else if (n > (this->size()))
+					else if (n > (this->_capacity))
 					{
-						pointer	oldstart		= this->_startpointer;
-						size_type oldsize		= this->size();
-						size_type oldcapacity	= this->capacity();
-
-						this->_startpointer		= _allocator.allocate(n);
+						// mettre a jour la capacity
+						if (n >= SIZE_MAX)
+							throw std::length_error("vector");
+						if (_capacity == 0)
+							_capacity = 1;
+						n < SIZE_MAX / 2 ? _capacity *= 2 : _capacity = SIZE_MAX;
+						if (n > _capacity)
+							_capacity = n;
+						this->_startpointer		= _allocator.allocate(_capacity);
 						this->_endpointer		= _startpointer + n;
+						this->_endmaxpointer	= _startpointer + _capacity;
 
 						size_type i = 0;
 						// construction avec la new taille
@@ -121,12 +161,18 @@ namespace ft
 							_allocator.destroy(oldstart + j);
 						}
 						_allocator.deallocate(oldstart, oldcapacity);
-						// attribution des dernieres valeurs si il en manque
-						for ( ; i < this->size() ; i++) {
-							_allocator.construct(_startpointer + i, val);
-						}
 					}
+					// si rentre dans aucuns if -> on modifie le endpointer
+					this->_endpointer			= _startpointer + n;
+					// attribution des dernieres valeurs si il en manque (n > oldsize) sans avoir a realouer si n < capacity et n > size
+					for (pointer it = _startpointer + oldsize ; it != _endpointer ; it++) {
+							_allocator.construct(it, val);
+						}
 				}
+
+				// =================
+				// === PUSH_BACK ===
+				// =================
 				void push_back (const value_type& val)
 				{
 					_allocator.construct(_endpointer, (const_reference)val);
