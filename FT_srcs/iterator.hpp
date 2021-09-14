@@ -37,7 +37,7 @@ namespace ft
 					return (*_pointer);
 				}
 
-				T&	operator++() {
+				random_access_iterator	operator++() {
 					return (_pointer++);
 				}
 

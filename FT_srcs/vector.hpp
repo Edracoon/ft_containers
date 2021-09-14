@@ -69,6 +69,10 @@ namespace ft
 				{
 					(void)x;
 				}
+				~vector ( void )
+				{
+					
+				}
 
 				// ===================
 				// === BEGIN | END ===
@@ -92,24 +96,36 @@ namespace ft
 
 				void resize (size_type n, value_type val = value_type())
 				{
-					(void)val;
-					std::cout << "ok" << std::endl;
 					if (n < (this->size()))
 					{
-						for ( pointer it = this->_startpointer + n ; it != this->size() ; it++ )
+						for ( pointer it = this->_startpointer + n ; it != this->_endpointer ; it++ )
 							this->_allocator.destroy(it);
 						this->_endpointer = this->_startpointer + n;
 					}
-					std::cout << "ok1" << std::endl;
-					//else if (n > (this->size()))
-						// alloc la place manquante ?
-					this->_endpointer		= _startpointer + n;
-					// while (n >= )
-					// {
-					// 	_allocator.construct(_endpointer, (const_reference)val);
-					// 	_endpointer++;
-					// 	n--;
-					// }
+					else if (n > (this->size()))
+					{
+						pointer	oldstart		= this->_startpointer;
+						size_type oldsize		= this->size();
+						size_type oldcapacity	= this->capacity();
+
+						this->_startpointer		= _allocator.allocate(n);
+						this->_endpointer		= _startpointer + n;
+
+						size_type i = 0;
+						// construction avec la new taille
+						for ( ; i < oldsize ; i++ ) {
+							_allocator.construct(_startpointer + i, oldstart[i]);
+						}
+						// destruction du content precedent
+						for (size_type j = 0; j != i ; j++) {
+							_allocator.destroy(oldstart + j);
+						}
+						_allocator.deallocate(oldstart, oldcapacity);
+						// attribution des dernieres valeurs si il en manque
+						for ( ; i < this->size() ; i++) {
+							_allocator.construct(_startpointer + i, val);
+						}
+					}
 				}
 				void push_back (const value_type& val)
 				{

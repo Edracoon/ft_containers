@@ -30,8 +30,7 @@ $(STL_NAME):	$(STL_OBJS)
 diff:		re
 			./$(FT_NAME) > FT.log
 			./$(STL_NAME) > STL.log
-			diff FT.log STL.log > ft-stl.diff
-			cat ft-stl.diff
+			diff FT.log STL.log > ft-stl.diff | cat ft-stl.diff
 
 clean:
 			rm -rf $(wildcard *.log *.diff)
