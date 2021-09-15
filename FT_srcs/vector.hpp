@@ -90,6 +90,9 @@ namespace ft
 				size_type	size() const {
 					return (this->_endpointer - this->_startpointer);
 				}
+				// ================
+				// === CAPACITY ===
+				// ================
 				size_type capacity() const {
 					return (this->_capacity);
 				}
@@ -142,9 +145,9 @@ namespace ft
 						// mettre a jour la capacity
 						if (n >= SIZE_MAX)
 							throw std::length_error("vector");
+						n < SIZE_MAX / 2 ? _capacity *= 2 : _capacity = SIZE_MAX;
 						if (_capacity == 0)
 							_capacity = 1;
-						n < SIZE_MAX / 2 ? _capacity *= 2 : _capacity = SIZE_MAX;
 						if (n > _capacity)
 							_capacity = n;
 						this->_startpointer		= _allocator.allocate(_capacity);
@@ -175,8 +178,7 @@ namespace ft
 				// =================
 				void push_back (const value_type& val)
 				{
-					_allocator.construct(_endpointer, (const_reference)val);
-					_endpointer++;
+					this->resize(this->size() + 1, val);
 				}
 	};
 }

@@ -1,72 +1,39 @@
 #include <iostream>
 #include <vector>
 
+// copier les mains dans f-t_srcs/testers et change_all_occurrence [f-t] -> [std]
+
 int	main( void )
 {
-	 // ======= RESIZE =======
+		// ==== PUSH_BACK ====
+	std::vector<int>	vectint;
+	vectint.push_back(43);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(23);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(1);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(87);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(567);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(4);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(3453);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(123);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(4537);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(53443);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	vectint.push_back(3243);
+	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
 
-	std::vector<int> myvector(10, 3);
+	std::vector<int>::iterator	it = vectint.begin();
+	std::vector<int>::iterator	ite = vectint.end();
 
-	// set some initial content:
-	myvector.resize(5);
-	std::cout << "capacity = " << myvector.capacity() << std::endl;
-	std::cout << "size = " << myvector.size() << std::endl;
-	myvector.resize(8,100);
-	std::cout << "capacity = " << myvector.capacity() << std::endl;
-	std::cout << "size = " << myvector.size() << std::endl;
-	myvector.resize(12);
-	std::cout << "capacity = " << myvector.capacity() << std::endl;
-	std::cout << "size = " << myvector.size() << std::endl;
-	myvector.resize(12, 10);
-	std::cout << "capacity = " << myvector.capacity() << std::endl;
-	std::cout << "size = " << myvector.size() << std::endl;
-	myvector.resize(100, 5);
-	std::cout << "capacity = " << myvector.capacity() << std::endl;
-	std::cout << "size = " << myvector.size() << std::endl;
-	myvector.resize(SIZE_MAX, 5);
-	std::cout << "capacity = " << myvector.capacity() << std::endl;
-	std::cout << "size = " << myvector.size() << std::endl;
-
-	std::vector<int>::iterator	it = myvector.begin();
-	std::vector<int>::iterator	ite = myvector.end();
-
-	std::cout << "myvector contains:";
 	for ( ; it != ite ; it++)
-		std::cout << ' ' << *it;
-	std::cout << '\n';
-
-	std::cout << "capacity = " << myvector.capacity() << std::endl;
-
-	// =========================== 
-
-	// std::vector<int>		vectint(10);
-	// std::cout << "capacity = " << vectint.capacity() << std::endl; 
-	// std::vector<int>::iterator	it = vectint.begin();
-	// std::vector<int>::iterator	it_cpy = it;
-	// std::vector<int>::iterator	ite = vectint.end();
-	// while (it_cpy != ite)
-	// {
-	// 	std::cout << *it_cpy << " ";
-	// 	*it_cpy = 5;
-	// 	it_cpy++;
-	// }
-
-	// std::vector<int>::iterator	it2 = vectint.begin();
-	// std::vector<int>::iterator	ite2 = vectint.end();
-	// while (it2 != ite2)
-	// {
-	// 	std::cout << *it2 << " ";
-	// 	*it2 = 14;
-	// 	it2++;
-	// }
-
-	// std::cout << "size = " << vectint.size() << std::endl;
-	// std::vector<int>::iterator	it3 = vectint.begin();
-	// std::vector<int>::iterator	ite3 = vectint.end();
-	// while (it3 != ite3)
-	// {
-	// 	std::cout << *it3 << " ";
-	// 	*it3 = 14;
-	// 	it3++;
-	// }
+		std::cout << " " << *it;
+	std::cout << std::endl;
 }
