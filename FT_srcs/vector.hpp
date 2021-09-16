@@ -4,6 +4,7 @@
 # include <iostream>
 # include <memory>
 # include "iterator.hpp"
+# include <tgmath.h>
 
 namespace ft
 {
@@ -39,7 +40,7 @@ namespace ft
 					pointer			_endpointer;	// last elem
 					pointer			_endmaxpointer;	// double size in case of reallocation
 					allocator_type	_allocator;		// allocateur selon son type pour utiliser ses fonctions
-					size_type		_capacity;
+					size_type		_capacity;		// 
 		public:
 				explicit	// Default
 				vector (const allocator_type& alloc = allocator_type())
@@ -67,7 +68,7 @@ namespace ft
 				}
 				vector (const vector& x) // copy
 				{
-					(void)x;
+					*this = x; // operator =
 				}
 				~vector ( void )
 				{
@@ -83,6 +84,35 @@ namespace ft
 				iterator	end( void ) const {
 					return (iterator(this->_endpointer));
 				}
+				// ====================
+				// === BACK | FRONT ===
+				// ====================
+				reference back() {
+					return (*(_endpointer - 1));
+				}
+				const_reference back() const {
+					return (*(_endpointer - 1));
+				}
+				reference front() {
+					return (*(_startpointer));
+				}
+				const_reference front() const {
+					return (*(_startpointer));
+				}
+
+				// ==========
+				// === AT ===
+				// ==========
+				reference at (size_type n) {
+					if (n >= size() || n < 0)
+						throw std::out_of_range("vector");
+					return (_startpointer[n]);
+				}
+				const_reference at (size_type n) const {
+					if (n >= size())
+						throw std::out_of_range("vector");
+					return (_startpointer[n]);
+				}
 
 				// ============
 				// === SIZE ===
@@ -95,6 +125,20 @@ namespace ft
 				// ================
 				size_type capacity() const {
 					return (this->_capacity);
+				}
+				// ================
+				// === MAX_SIZE ===
+				// ================
+				size_type max_size() const {
+					if (sizeof(value_type) == 1)
+						return (_allocator.max_size() / 2);
+					return (_allocator.max_size());
+				}
+				// =================
+				// === GET_ALLOC ===
+				// =================
+				allocator_type get_allocator(void) const {
+					return (this->_allocator);
 				}
 
 				// ===============
@@ -109,13 +153,13 @@ namespace ft
 						return ;
 					_capacity = n;
 					this->_startpointer		= _allocator.allocate(n);
-					this->_endpointer		= _startpointer + n;
 					this->_endmaxpointer	= _startpointer + _capacity;
-
+					this->_endpointer		= _startpointer;
 					size_type i = 0;
 					// construction avec la new taille
 					for ( ; i < oldsize ; i++ ) {
 						_allocator.construct(_startpointer + i, oldstart[i]);
+						_endpointer++;
 					}
 					// destruction du content precedent
 					for (size_type j = 0; j != i ; j++) {
@@ -180,6 +224,92 @@ namespace ft
 				{
 					this->resize(this->size() + 1, val);
 				}
+
+				// =================
+				// === POP_BACK ====
+				// =================
+				void pop_back ( void )
+				{
+					_allocator.destroy(_endpointer - 1);
+					_endpointer--;
+				}
+
+				// =================
+				// ===== ASSIGN ====
+				// =================
+				void assign (size_type n, const value_type& val)	// FILL VERSION
+				{
+					// destruct des elements deja presents
+					pointer temp = _endpointer - 1;
+					while (_startpointer - 1 != temp)
+					{
+						_allocator.destroy(temp);
+						_endpointer--;
+						temp--;
+					}
+					this->resize(n, val);
+				}
+
+				// =================
+				// ===== ERASE =====
+				// =================
+				iterator erase (iterator position)
+				{
+					pointer	pos	= &(*(position));
+					_allocator.destroy(pos);
+					size_type	i = 0;
+					for ( ; i < this->size() ; ) {
+						
+					}
+					return ();
+				}
+				// =================
+				// ===== CLEAR ====
+				// =================
+				void clear()
+				{
+					for ( ; _startpointer != _endpointer ; ) {
+						_allocator.destroy(_endpointer - 1);
+						_endpointer--;
+					}
+				}
+
+				// =================
+				// ===== EMPTY =====
+				// =================
+				bool empty() const {
+					return (this->size() == 0 ? true : false);
+				}
+				// template <class InputIterator>				// RANGE VERSION
+				// void assign (InputIterator first, InputIterator last);
+
+				// ====================
+				// ===== OPERATORS ====
+				// ====================
+				reference operator[] (size_type n) {
+					return (_startpointer[n]);
+				}
+
+				const_reference operator[] (size_type n) const {
+					return (_startpointer[n]);
+				}
+
+				vector& operator= (const vector& x)
+				{
+					this->_allocator.deallocate(this->_startpointer, this->_capacity);
+					_startpointer = this->_allocator.allocate(x.size());
+					size_type	n = 0;
+					_endpointer = _startpointer;
+					_endmaxpointer = _endpointer + x.size();
+					_capacity = x.size();
+					for (size_type i = x.size() ; i > 0 ; i--)
+					{
+						_allocator.construct(_endpointer, x[n]);
+						_endpointer++;
+						n++;
+					}
+					return (*this);
+				 }
 	};
 }
 

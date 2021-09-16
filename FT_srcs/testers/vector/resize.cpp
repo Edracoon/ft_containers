@@ -8,6 +8,10 @@ int	main( void )
 	ft::vector<int> myvector(10, 3);
 
 	// set some initial content:
+	myvector.resize(0);
+	std::cout << myvector[0] << std::endl;
+	std::cout << "capacity = " << myvector.capacity() << std::endl;
+	std::cout << "size = " << myvector.size() << std::endl;
 	myvector.resize(5);
 	std::cout << "capacity = " << myvector.capacity() << std::endl;
 	std::cout << "size = " << myvector.size() << std::endl;
@@ -23,7 +27,7 @@ int	main( void )
 	myvector.resize(100, 5);
 	std::cout << "capacity = " << myvector.capacity() << std::endl;
 	std::cout << "size = " << myvector.size() << std::endl;
-	myvector.resize(SIZE_MAX, 5);
+	//myvector.resize(SIZE_MAX, 5);
 	std::cout << "capacity = " << myvector.capacity() << std::endl;
 	std::cout << "size = " << myvector.size() << std::endl;
 
