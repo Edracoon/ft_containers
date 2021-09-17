@@ -53,6 +53,41 @@ namespace ft
 				{ return ( *this == rhs ? true : false ); }
 
 	};
+	template< typename T >
+	class reverse_iterator : iterator<ft::random_access_iterator_tag, T>
+	{
+		protected:
+				typedef T*			pointer;
+				pointer				_pointer;
+		public:
+				reverse_iterator( void ) { _pointer = NULL; }					// default
+				reverse_iterator( pointer pointer ) { _pointer = pointer; }	// param
+				reverse_iterator( const T& rhs ) { *this = rhs; }				// copy
+				~reverse_iterator( void ) {  }								// destruct
+
+				reverse_iterator&		operator=( const reverse_iterator& rhs )	// assignation
+				{ this->_pointer = rhs._pointer; return (*this); }
+
+				T&	operator* () {
+					return (*_pointer);
+				}
+
+				reverse_iterator	operator++() {
+					return (_pointer--);
+				}
+
+				reverse_iterator	operator++(int) {
+					pointer temp = _pointer;
+					_pointer--;
+					return (temp);
+				}
+
+				bool	operator!=( const reverse_iterator& rhs )
+				{ return ( this->_pointer == rhs._pointer ? false : true ); }
+				bool	operator==( const T& rhs ) const
+				{ return ( *this == rhs ? true : false ); }
+
+	};
 
 }
 
