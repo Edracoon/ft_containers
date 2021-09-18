@@ -4,3 +4,6 @@
 # Executables
 *.out
 containers
+
+# random
+*.log
