@@ -320,7 +320,6 @@ namespace ft
 				// =================
 				void assign (size_type n, const value_type& val)	// FILL VERSION
 				{
-					// std::cout << "hello" << std::endl;
 					// destruct des elements deja presents
 					pointer temp = _endpointer - 1;
 					while (_startpointer - 1 != temp)
@@ -331,13 +330,13 @@ namespace ft
 					}
 					this->resize(n, val);
 				}
-				template <class InputIterator>						// RANGE VERSION ENABLE_IF ?
-				void assign (InputIterator first, InputIterator last)
-				{
-					this->clear();
-					for ( ; first != last ; first++)
-						this->push_back(*first);
-				}
+				// template <class InputIterator>						// RANGE VERSION ENABLE_IF ? ou IF IS INTEGRAL
+				// void assign (InputIterator first, InputIterator last)
+				// {
+				// 	this->clear();
+				// 	for ( ; first != last ; first++)
+				// 		this->push_back(*first);
+				// }
 
 				// =================
 				// ===== ERASE =====
@@ -417,7 +416,7 @@ namespace ft
 
 				vector& operator= (const vector& x)
 				{
-					// if ( this != &x)						FIXER LE ASSIGN POUR QU'IL MARCHE AVEC operator=
+					// if ( this != &x)						// FIXER LE ASSIGN POUR QU'IL MARCHE AVEC operator=
 					// 	this->assign(x.begin(), x.end());
 					this->_allocator.deallocate(this->_startpointer, this->_capacity);
 					_startpointer	= this->_allocator.allocate(x.size());
