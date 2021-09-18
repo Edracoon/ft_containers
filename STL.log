@@ -1,0 +1,4 @@
+ vectint.capacity() = 32 vectint.size() = 23
+assignation vector
+ vectintcpy.capacity() = 23 vectintcpy.size() = 23
+0 1 2 3 4 5 6 7 8 9 800 800 800 10 11 12 13 14 15 16 17 18 19 

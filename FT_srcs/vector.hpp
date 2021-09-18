@@ -151,23 +151,23 @@ namespace ft
 				// ============
 				void swap(vector& x)
 				{
-					allocator_type	temp_alloc	= x._allocator;	// swap allocator
+					allocator_type	temp_alloc	= x._allocator;		// swap allocator
 					x._allocator				= this->_allocator;
 					this->_allocator			= temp_alloc;
 
-					pointer			temp		= x._startpointer;
+					pointer			temp		= x._startpointer;	// swap start
 					x._startpointer				= this->_startpointer;
 					this->_startpointer			= temp;
 
-					temp						= x._endpointer;
+					temp						= x._endpointer;	// swap end
 					x._endpointer				= this->_endpointer;
 					this->_endpointer			= temp;
 
-					temp						= x._endmaxpointer;
+					temp						= x._endmaxpointer;	// swap endmax
 					x._endmaxpointer			= this->_endmaxpointer;
 					this->_endmaxpointer		= temp;
 
-					size_type temp_s			= x._capacity;
+					size_type temp_s			= x._capacity;		// swap capacity
 					x._capacity					= this->_capacity;
 					this->_capacity				= temp_s;
 				}
@@ -253,26 +253,50 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
+					//pointer	pos	= &(*(position));
 					this->push_back(*(_endpointer - 1));
 					size_type i = 0;
-					for ( ; _endpointer - i != position ; i++ )
+					for ( ; _endpointer - i != &(*(position)) ; i++ )
 					{
-						this->_allocator.destroy(_endpointer - i - 2);
-						this->_allocator.construct(_endpointer - i - 2, *(_endpointer - i - 3));
+						this->_allocator.destroy(_endpointer - i );
+						this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
 					}
-					this->_allocator.destroy(_endpointer - i - 2);
-					this->_allocator.construct(_endpointer - i - 2, val);
+					this->_allocator.destroy(_endpointer - i);
+					this->_allocator.construct(_endpointer - i, val);
 					return (position);
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
 				{
-					(void)position; (void)n; (void)val;
+					for (size_type range = 0 ; range < n ; range++ )
+					{
+						this->push_back(*(_endpointer - 1));
+						size_type i = 0;
+						for ( ; _endpointer - i != &(*(position)) ; i++ )
+						{
+							this->_allocator.destroy(_endpointer - i );
+							this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
+						}
+						this->_allocator.destroy(_endpointer - i + range);
+						this->_allocator.construct(_endpointer - i + range, val);
+					}
 				}
-				template <class InputIterator>
-				void insert (iterator position, InputIterator first, InputIterator last)	// RANGE
-				{
-					(void)position; (void)first; (void)last;
-				}
+				// template <class InputIterator>
+				// void insert (iterator position, InputIterator first, InputIterator last)	// RANGE ENABLE IF
+				// {
+				// 	size_type n = &(*((iterator)last)) - &(*((iterator)first));
+				// 	for (size_type range = 0 ; range < n ; range++ )
+				// 	{
+				// 		this->push_back(*(_endpointer - 1));
+				// 		size_type i = 0;
+				// 		for ( ; _endpointer - i != &(*(position)) ; i++ )
+				// 		{
+				// 			this->_allocator.destroy(_endpointer - i );
+				// 			this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
+				// 		}
+				// 		this->_allocator.destroy(_endpointer - i + range);
+				// 		this->_allocator.construct(_endpointer - i + range, first++);
+				// 	}
+				// }
 
 				// =================
 				// === PUSH_BACK ===
@@ -296,6 +320,7 @@ namespace ft
 				// =================
 				void assign (size_type n, const value_type& val)	// FILL VERSION
 				{
+					// std::cout << "hello" << std::endl;
 					// destruct des elements deja presents
 					pointer temp = _endpointer - 1;
 					while (_startpointer - 1 != temp)
@@ -312,7 +337,6 @@ namespace ft
 					this->clear();
 					for ( ; first != last ; first++)
 						this->push_back(*first);
-					this->push_back(*first);
 				}
 
 				// =================
@@ -393,6 +417,8 @@ namespace ft
 
 				vector& operator= (const vector& x)
 				{
+					// if ( this != &x)						FIXER LE ASSIGN POUR QU'IL MARCHE AVEC operator=
+					// 	this->assign(x.begin(), x.end());
 					this->_allocator.deallocate(this->_startpointer, this->_capacity);
 					_startpointer	= this->_allocator.allocate(x.size());
 					size_type	n	= 0;
