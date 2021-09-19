@@ -1,14 +1,14 @@
 #include <iostream>
-#include <vector>
+#include "vector.hpp"
 
 int	main( void )
 {
-	std::vector<int>				vectint;
+	ft::vector<int>				vectint;
 
 	for ( int i = 0 ; i < 20 ; i++)
 		vectint.push_back(i);
 
-	std::vector<int>::iterator	it = vectint.begin();
+	ft::vector<int>::iterator	it = vectint.begin();
 
 	for (int i = 0 ; i < 10 ; i++)
 		it++;
@@ -17,14 +17,13 @@ int	main( void )
 
 	std::cout << " vectint.capacity() = " << vectint.capacity() << " vectint.size() = " << vectint.size() << std::endl;
 
-	std::vector<int>				vectintcpy;
+	ft::vector<int>				vectintcpy;
 
-	vectintcpy = vectint;
-	std::cout << "assignation vector" << std::endl;
+	vectintcpy = vectint; std::cout << "assignation vector" << std::endl;
 	std::cout << " vectintcpy.capacity() = " << vectintcpy.capacity() << " vectintcpy.size() = " << vectintcpy.size() << std::endl;
 
 	it = vectint.begin();
-	std::vector<int>::iterator	ite = vectint.end();
+	ft::vector<int>::iterator	ite = vectint.end();
 	for ( ; it != ite ; it++ )
 		std::cout << *it << " ";
 	std::cout << std::endl;

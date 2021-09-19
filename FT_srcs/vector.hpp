@@ -8,6 +8,49 @@
 
 namespace ft
 {
+	template < class T, T v >
+	struct integral_constant
+	{
+		static const T value = v;
+
+		typedef T						value_type;
+		typedef integral_constant<T,v>	type;
+
+		inline operator T() { return v; }
+	};
+
+	typedef	integral_constant< bool, false >	false_type;
+	typedef	integral_constant< bool, true >		true_type;
+
+
+
+	template<bool B, class T = void>
+	struct enable_if {};
+ 
+	template<class T>
+	struct enable_if<true, T> { typedef T type; };
+
+	template <class T>
+	struct is_integral : false_type {} ;
+	template <>
+	struct is_integral<bool> : true_type {} ;
+	template <>
+	struct is_integral<char> : true_type {} ;
+	template <>
+	struct is_integral<char16_t> : true_type {} ;
+	template <>
+	struct is_integral<char32_t> : true_type {} ;
+	template <>
+	struct is_integral<wchar_t> : true_type {} ;
+	template <>
+	struct is_integral<short> : true_type {} ;
+	template <>
+	struct is_integral<int> : true_type {} ;
+	template <>
+	struct is_integral<long> : true_type {} ;
+	template <>
+	struct is_integral<long long> : true_type {} ;
+
 	/* === VECTOR ===*/
 	template< typename T, class Alloc = std::allocator<T> >
 	class vector
@@ -30,8 +73,8 @@ namespace ft
 				// Quantité d'élement dans le container (size_t) pour le constructeur parametrique
 				typedef size_t										size_type;
 				// typedef pour les iterators
-				typedef ft::random_access_iterator<T>				iterator;			// modify / iterate
-				// typedef ft::random_access_iterator<const T>			const_iterator;		// only iterate
+				typedef ft::random_access_iterator<T>				iterator;			
+				typedef ft::random_access_iterator<const T>			const_iterator;		
 				typedef ft::reverse_iterator<iterator>				reverse_iterator;	// 
 				// typedef ft::const_reverse_iterator<const_iterator>	const_reverse_iterator;
 				
@@ -76,11 +119,17 @@ namespace ft
 				// ===================
 				// === BEGIN | END ===
 				// ===================
-				iterator	begin( void ) const {
+				iterator begin( void )  {
 					return (iterator(this->_startpointer));
 				}
-				iterator	end( void ) const {
+				const_iterator	begin( void ) const {
+					return (const_iterator(this->_startpointer));
+				}
+				iterator	end( void )  {
 					return (iterator(this->_endpointer));
+				}
+				const_iterator	end( void ) const {
+					return (const_iterator(this->_endpointer));
 				}
 				reverse_iterator rbegin( void ) {
 					return (_endpointer - 1);	// last elem
@@ -318,7 +367,7 @@ namespace ft
 				// =================
 				// ===== ASSIGN ====
 				// =================
-				void assign (size_type n, const value_type& val)	// FILL VERSION
+				void assign (size_type n, const value_type& val)	// FILL OVERLOAD
 				{
 					// destruct des elements deja presents
 					pointer temp = _endpointer - 1;
@@ -330,13 +379,13 @@ namespace ft
 					}
 					this->resize(n, val);
 				}
-				// template <class InputIterator>						// RANGE VERSION ENABLE_IF ? ou IF IS INTEGRAL
-				// void assign (InputIterator first, InputIterator last)
-				// {
-				// 	this->clear();
-				// 	for ( ; first != last ; first++)
-				// 		this->push_back(*first);
-				// }
+				template <class InputIterator>
+				typename enable_if< !is_integral<InputIterator>::value, void>::type assign(InputIterator first, InputIterator last)	// RANGE OVERLOAD
+				{
+					this->clear();
+					for ( ; first != last ; first++)
+						this->push_back(*first);
+				}
 
 				// =================
 				// ===== ERASE =====
@@ -431,7 +480,7 @@ namespace ft
 						n++;
 					}
 					return (*this);
-				 }
+				}
 	};
 
 	// ====================

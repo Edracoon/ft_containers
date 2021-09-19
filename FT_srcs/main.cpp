@@ -19,7 +19,8 @@ int	main( void )
 
 	ft::vector<int>				vectintcpy;
 
-	vectintcpy = vectint; std::cout << "assignation vector" << std::endl;
+	vectintcpy = vectint;
+	std::cout << "assignation vector" << std::endl;
 	std::cout << " vectintcpy.capacity() = " << vectintcpy.capacity() << " vectintcpy.size() = " << vectintcpy.size() << std::endl;
 
 	it = vectint.begin();
