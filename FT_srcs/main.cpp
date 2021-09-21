@@ -15,7 +15,9 @@ int	main( void )
 	vectint.insert(it, 3, 800);
 
 	ft::vector<int>				vectint_2;
+	//vectint_2 = vectint;
 	vectint_2.assign(vectint.begin(), vectint.end());
+	std::cout << "vectint_2.capacity() = " << vectint_2.capacity() << " vectint_2.size() = " << vectint_2.size() << std::endl;
 
 	ft::vector<int>::iterator	it2 = vectint_2.begin();
 	for (int i = 0 ; i < 10 ; i++)
@@ -29,7 +31,7 @@ int	main( void )
 		std::cout << *it << " ";
 	std::cout << std::endl;
 
-	std::cout << " vectint.capacity() = " << vectint.capacity() << " vectint.size() = " << vectint.size() << std::endl;
+	std::cout << "vectint.capacity() = " << vectint.capacity() << " vectint.size() = " << vectint.size() << std::endl;
 
 	it = vectint.begin();
 	ite = vectint.end();

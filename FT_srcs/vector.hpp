@@ -4,83 +4,37 @@
 # include <iostream>
 # include <memory>
 # include "iterator.hpp"
+# include <iterator>     // std::distance
 # include <tgmath.h>
+# include "utils.hpp"
 
 namespace ft
 {
-	template < class T, T v >
-	struct integral_constant
-	{
-		static const T value = v;
-
-		typedef T						value_type;
-		typedef integral_constant<T,v>	type;
-
-		inline operator T() { return v; }
-	};
-
-	typedef	integral_constant< bool, false >	false_type;
-	typedef	integral_constant< bool, true >		true_type;
-
-
-
-	template<bool B, class T = void>
-	struct enable_if {};
- 
-	template<class T>
-	struct enable_if<true, T> { typedef T type; };
-
-	template <class T>
-	struct is_integral : false_type {} ;
-	template <>
-	struct is_integral<bool> : true_type {} ;
-	template <>
-	struct is_integral<char> : true_type {} ;
-	template <>
-	struct is_integral<char16_t> : true_type {} ;
-	template <>
-	struct is_integral<char32_t> : true_type {} ;
-	template <>
-	struct is_integral<wchar_t> : true_type {} ;
-	template <>
-	struct is_integral<short> : true_type {} ;
-	template <>
-	struct is_integral<int> : true_type {} ;
-	template <>
-	struct is_integral<long> : true_type {} ;
-	template <>
-	struct is_integral<long long> : true_type {} ;
-
 	/* === VECTOR ===*/
 	template< typename T, class Alloc = std::allocator<T> >
 	class vector
 	{
 		public:
-				// Template du type de valeur
-				typedef	T											value_type;
+				typedef	T															value_type;
 				// Template pour le type d'allocator, par defaut set à : std::allocator<T> 
-				typedef	Alloc										allocator_type;
-				// Reference de l'allocateur par defaut est (value_type&)
-				typedef typename allocator_type::reference			reference;
-				//const Reference de l'allocateur par defaut est (const value_type&)
-				typedef typename allocator_type::const_reference	const_reference;
-				// Pointer de l'allocateur par defaut est (value_type*)
-				typedef typename allocator_type::pointer			pointer;
-				// const Pointer de l'allocateur par defaut est (const value_type*)
-				typedef typename allocator_type::const_pointer		const_pointer;
+				typedef	Alloc														allocator_type;// std::allocator
+				typedef typename allocator_type::reference							reference;// value_type&
+				typedef typename allocator_type::const_reference					const_reference;// value_type*
+				typedef typename allocator_type::pointer							pointer;
+				typedef typename allocator_type::const_pointer						const_pointer;
 				// same as ptrdiff_t
-				// typedef	typename iterator_traits<ft::iterator>::difference_type	difference_type;
-				// Quantité d'élement dans le container (size_t) pour le constructeur parametrique
-				typedef size_t										size_type;
+				typedef size_t														size_type;
 				// typedef pour les iterators
-				typedef ft::random_access_iterator<T>				iterator;			
-				typedef ft::random_access_iterator<const T>			const_iterator;		
-				typedef ft::reverse_iterator<iterator>				reverse_iterator;	// 
-				// typedef ft::const_reverse_iterator<const_iterator>	const_reverse_iterator;
+				typedef random_access_iterator<pointer>								iterator;			
+				typedef random_access_iterator<const_pointer>						const_iterator;
+				typedef reverse_iterator<iterator>									reverse_iterator;
+				// typedef ft::const_reverse_iterator<const_iterator>					const_reverse_iterator;
+
+				typedef	typename allocator_type::difference_type	 				difference_type;
 				
 		protected:
 					pointer			_startpointer;	// first elem
-					pointer			_endpointer;	// last elem
+					pointer			_endpointer;	// last elem + 1
 					pointer			_endmaxpointer;	// double size in case of reallocation
 					allocator_type	_allocator;		// allocateur selon son type pour utiliser ses fonctions
 					size_type		_capacity;		// 
@@ -119,23 +73,23 @@ namespace ft
 				// ===================
 				// === BEGIN | END ===
 				// ===================
-				iterator begin( void )  {
+				iterator begin( void ) {
 					return (iterator(this->_startpointer));
 				}
 				const_iterator	begin( void ) const {
 					return (const_iterator(this->_startpointer));
 				}
-				iterator	end( void )  {
+				iterator	end( void ) {
 					return (iterator(this->_endpointer));
 				}
 				const_iterator	end( void ) const {
 					return (const_iterator(this->_endpointer));
 				}
 				reverse_iterator rbegin( void ) {
-					return (_endpointer - 1);	// last elem
+					return reverse_iterator(_endpointer - 1);	// last elem
 				}
 				reverse_iterator rend( void ) {
-					return (_startpointer - 1);	// before the first elem to simulate a end()
+					return reverse_iterator(_startpointer - 1);	// before the first elem to simulate a end()
 				}
 
 				// ====================
@@ -302,7 +256,6 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
-					//pointer	pos	= &(*(position));
 					this->push_back(*(_endpointer - 1));
 					size_type i = 0;
 					for ( ; _endpointer - i != &(*(position)) ; i++ )
@@ -320,7 +273,7 @@ namespace ft
 					{
 						this->push_back(*(_endpointer - 1));
 						size_type i = 0;
-						for ( ; _endpointer - i != &(*(position)) ; i++ )
+						for ( ; _endpointer - i != position.base() ; i++ )
 						{
 							this->_allocator.destroy(_endpointer - i );
 							this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
@@ -329,23 +282,21 @@ namespace ft
 						this->_allocator.construct(_endpointer - i + range, val);
 					}
 				}
-				template <class InputIterator>	// ne compile pas ????? voir main ligne insert et ligne 347 :  in instantiation of function template specialization 'std::__1::allocator<int>::construct<ft::random_access_iterator<int> >' requested here
-                                               	//                                                                this->_allocator.construct(_endpointer - i + range, first++);
+				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
-					size_type n = &(*((iterator)last)) - &(*((iterator)first));
-					std::cout << n << std::cout;
+					size_type n = last - first;
 					for (size_type range = 0 ; range < n ; range++ )
 					{
 						this->push_back(*(_endpointer - 1));
 						size_type i = 0;
-						for ( ; _endpointer - i != &(*(position)) ; i++ )
+						for ( ; _endpointer - i != position.base() ; i++ )
 						{
 							this->_allocator.destroy(_endpointer - i );
 							this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
 						}
 						this->_allocator.destroy(_endpointer - i + range);
-						this->_allocator.construct(_endpointer - i + range, first++);
+						this->_allocator.construct(_endpointer - i + range, *first++);
 					}
 				}
 
@@ -354,7 +305,13 @@ namespace ft
 				// =================
 				void push_back (const value_type& val)
 				{
-					this->resize(this->size() + 1, val);
+					if (this->size() < _capacity)
+					{
+						_endpointer++;
+						_allocator.construct(_endpointer - 1, val);
+					}
+					else
+						this->resize(this->size() + 1, val);
 				}
 
 				// =================
@@ -372,21 +329,27 @@ namespace ft
 				void assign (size_type n, const value_type& val)	// FILL OVERLOAD
 				{
 					// destruct des elements deja presents
-					pointer temp = _endpointer - 1;
-					while (_startpointer - 1 != temp)
-					{
-						_allocator.destroy(temp);
-						_endpointer--;
-						temp--;
-					}
+					this->clear();
 					this->resize(n, val);
 				}
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type assign(InputIterator first, InputIterator last)	// RANGE OVERLOAD
 				{
 					this->clear();
-					for ( ; first != last ; first++)
-						this->push_back(*first);
+					size_type	dist = std::distance(first, last);
+					if (this->_capacity >= dist)
+					{
+						for ( ; first != last ; first++)
+							this->push_back(*first);
+					}
+					else
+					{
+						this->reserve(dist);
+						for ( ; first != last ; first++) {
+							_allocator.construct(_endpointer, *first);
+							_endpointer++;
+						}
+					}
 				}
 
 				// =================
@@ -394,8 +357,8 @@ namespace ft
 				// =================
 				iterator erase(iterator position)
 				{
-					pointer	pos	= &(*(position));
-					_allocator.destroy(&(*(position)));
+					pointer	pos	= position.base();
+					_allocator.destroy(position.base());
 					size_type	i = 0;
 					if (pos == _endpointer - 1)
 					{
@@ -406,7 +369,7 @@ namespace ft
 					else if (pos != _endpointer)
 					{
 						for ( ; i + *position < this->size() ; i++ ) {
-							_allocator.construct(pos + i, *(&(*position) + i + 1));
+							_allocator.construct(pos + i, *(position.base() + i + 1));
 							_allocator.destroy(pos + i + 1);
 						}
 						_endpointer -= 1;
@@ -415,9 +378,9 @@ namespace ft
 				}
 				iterator erase(iterator first, iterator last)
 				{
-					pointer	pos	= &(*(first));
-					_allocator.destroy(&(*(first)));
-					size_type	diff = &(*(last)) - &(*(first));
+					pointer	pos	= first.base();
+					_allocator.destroy(first.base());
+					size_type	diff = std::distance(first, last);
 					if (pos == _endpointer - 1)
 					{
 						_allocator.destroy(pos);
@@ -434,7 +397,6 @@ namespace ft
 					}
 					return (pos);
 				}
-
 
 				// =================
 				// ===== CLEAR =====
@@ -467,20 +429,8 @@ namespace ft
 
 				vector& operator= (const vector& x)
 				{
-					// if ( this != &x)						// FIXER LE ASSIGN POUR QU'IL MARCHE AVEC operator=
-					// 	this->assign(x.begin(), x.end());
-					this->_allocator.deallocate(this->_startpointer, this->_capacity);
-					_startpointer	= this->_allocator.allocate(x.size());
-					size_type	n	= 0;
-					_endpointer		= _startpointer;
-					_endmaxpointer	= _endpointer + x.size();
-					_capacity		= x.size();
-					for (size_type i = x.size() ; i > 0 ; i--)
-					{
-						_allocator.construct(_endpointer, x[n]);
-						_endpointer++;
-						n++;
-					}
+					if ( this != &x)
+						this->assign(x.begin(), x.end());
 					return (*this);
 				}
 	};
