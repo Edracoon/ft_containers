@@ -1,10 +1,10 @@
 #include <iostream>
-#include "vector.hpp"
+#include <vector>
 
 int	main( void )
 {
 	// ==== PUSH_BACK ====
-	ft::vector<int>	vectint;
+	std::vector<int>	vectint;
 	vectint.push_back(43);
 	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
 	vectint.push_back(23);
@@ -28,8 +28,8 @@ int	main( void )
 	vectint.push_back(3243);
 	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
 
-	ft::vector<int>::iterator	it = vectint.begin();
-	ft::vector<int>::iterator	ite = vectint.end();
+	std::vector<int>::iterator	it = vectint.begin();
+	std::vector<int>::iterator	ite = vectint.end();
 
 	for ( ; it != ite ; it++)
 		std::cout << " " << *it;

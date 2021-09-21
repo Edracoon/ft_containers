@@ -1,9 +1,9 @@
 #include <iostream>
-#include "vector.hpp"
+#include <vector>
 
 int	main( void )
 {
-	ft::vector<int>				vecti;
+	std::vector<int>				vecti;
 
 	vecti.push_back(12);
 	vecti.push_back(42);
@@ -16,16 +16,16 @@ int	main( void )
 
 	std::cout << std::endl << "vecti.size = " << vecti.size() << " vecti.capacity = " << vecti.capacity();
 	
-	ft::vector<int>				vecty;
+	std::vector<int>				vecty;
 
 	vecty = vecti;
 
 	std::cout << std::endl;
 
-	ft::vector<int>::iterator	it = vecty.begin();
-	ft::vector<int>::iterator	ite = vecty.end();
+	std::vector<int>::iterator	it = vecty.begin();
+	std::vector<int>::iterator	ite = vecty.end();
 	for ( ; it != ite ; it++)
-		std::cout << " " << *it;
+		std::cout << *it << " ";
 	std::cout << std::endl << "vecty.size = " << vecty.size() << " vecty.capacity = " << vecty.capacity();
-	std::cout << std::endl << "vecti.size = " << vecti.size() << " vecti.capacity = " << vecti.capacity();
+	std::cout << std::endl << "vecti.size = " << vecti.size() << " vecti.capacity = " << vecti.capacity() << std::endl;
 }

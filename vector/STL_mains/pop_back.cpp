@@ -1,10 +1,10 @@
 #include <iostream>
-#include "vector.hpp"
+#include <vector>
 
 int	main( void )
 {
 	// ==== POP_BACK ====
-	ft::vector<int>	vectint;
+	std::vector<int>	vectint;
 
 	vectint.push_back(123);
 	vectint.push_back(321);
@@ -24,13 +24,13 @@ int	main( void )
 	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
 	vectint.pop_back();
 	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
-	vectint.pop_back();
-	std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
+	// vectint.pop_back();
+	// std::cout << "capacity = " << vectint.capacity() << " size = " << vectint.size() << std::endl;
 	// un pop_back de trop -> size 0 - 1;
 
 	// segfault car iteration sans limite
-	ft::vector<int>::iterator	it = vectint.begin();
-	ft::vector<int>::iterator	ite = vectint.end();
+	std::vector<int>::iterator	it = vectint.begin();
+	std::vector<int>::iterator	ite = vectint.end();
 
 	for ( ; it != ite ; it++)
 		std::cout << " " << *it;

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "vector.hpp"
+#include "../vector.hpp"
 
 int	main( void )
 {
@@ -8,8 +8,8 @@ int	main( void )
 	ft::vector<char>			vectc;
 	ft::vector<std::string>		vects;
 
-	std::cout << "int \t\t" << vecti.max_size() << std::endl;
+	std::cout << "int \t" << vecti.max_size() << std::endl;
 	std::cout << "double \t" << vectd.max_size() << std::endl;
-	std::cout << "char \t\t" << vectc.max_size() << std::endl;
+	std::cout << "char \t" << vectc.max_size() << std::endl;
 	std::cout << "string \t" << vects.max_size() << std::endl;
 }

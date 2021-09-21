@@ -258,7 +258,7 @@ namespace ft
 				{
 					this->push_back(*(_endpointer - 1));
 					size_type i = 0;
-					for ( ; _endpointer - i != &(*(position)) ; i++ )
+					for ( ; _endpointer - i != position.bast() ; i++ )
 					{
 						this->_allocator.destroy(_endpointer - i );
 						this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
@@ -285,7 +285,7 @@ namespace ft
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
-					size_type n = last - first;
+					size_type n = std::distance(first, last);
 					for (size_type range = 0 ; range < n ; range++ )
 					{
 						this->push_back(*(_endpointer - 1));
@@ -296,7 +296,8 @@ namespace ft
 							this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
 						}
 						this->_allocator.destroy(_endpointer - i + range);
-						this->_allocator.construct(_endpointer - i + range, *first++);
+						this->_allocator.construct(_endpointer - i + range, *first);
+						//first++;
 					}
 				}
 

@@ -3,7 +3,7 @@
 
 # Executables
 *.out
-containers
+*.exe
 
 # random
 *.log

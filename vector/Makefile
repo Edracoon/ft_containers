@@ -1,7 +1,7 @@
 # === EXECUTABLES ===============
-FT_NAME		=	ft_containers.exe
+FT_NAME		=	FT_$(TESTER).exe
 
-STL_NAME	=	stl_containers.exe
+STL_NAME	=	STL_$(TESTER).exe
 
 # === COMPILATION ===============
 CXX			=	clang++
@@ -9,12 +9,12 @@ CXX			=	clang++
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
 
 # === FT SRCS / OBJS ============
-FT_SRCS		=	$(wildcard FT_srcs/*.cpp)
+FT_SRCS		=	$(wildcard FT_mains/$(TESTER).cpp)
 
 FT_OBJS		=	$(FT_SRCS:.cpp=.o)
 
 # === STL SRCS / OBJS ===========
-STL_SRCS	=	$(wildcard STL_srcs/*.cpp)
+STL_SRCS	=	$(wildcard STL_mains/$(TESTER).cpp)
 
 STL_OBJS	=	$(STL_SRCS:.cpp=.o)
 
