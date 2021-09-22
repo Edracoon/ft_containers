@@ -17,9 +17,7 @@ void test7( void )
 
 	std::cout << std::endl << "vecti.size = " << vecti.size() << " vecti.capacity = " << vecti.capacity();
 	
-	ft::vector<int>				vecty;
-
-	vecty = vecti;
+	ft::vector<int>				vecty(vecti);
 
 	std::cout << std::endl;
 

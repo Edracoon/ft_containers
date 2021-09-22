@@ -4,7 +4,7 @@
 # include <iostream>
 # include <memory>
 # include "iterator.hpp"
-# include <iterator>     // std::distance
+# include <iterator>	// std::distance
 # include <tgmath.h>
 # include "utils.hpp"
 
@@ -39,7 +39,8 @@ namespace ft
 					allocator_type	_allocator;		// allocateur selon son type pour utiliser ses fonctions
 					size_type		_capacity;		// 
 		public:
-				explicit	vector (const allocator_type& alloc = allocator_type())
+				explicit 
+				vector (const allocator_type& alloc = allocator_type())
 				{
 					this->_allocator		= alloc;
 					this->_startpointer		= NULL;
@@ -47,7 +48,8 @@ namespace ft
 					this->_endmaxpointer	= NULL;
 					this->_capacity			= 0;
 				}
-				explicit	vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+				explicit 
+				vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 				{
 					this->_allocator		= alloc;
 					this->_capacity			= n;
@@ -61,13 +63,32 @@ namespace ft
 						n--;
 					}
 				}
-				vector (const vector& x) // copy
+				template <class InputIterator>
+				vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+							typename enable_if< !is_integral<InputIterator>::value, int>::type = 0 )
 				{
+					size_type dist = std::distance(first, last);
+					_allocator = alloc;
+					_startpointer = _allocator.allocate(dist);
+					_endpointer = _startpointer + dist;
+					_capacity = dist;
+					this->assign(first, last);
+				}
+				vector (const vector& x) : _allocator(x._allocator) // copy
+				{
+					_startpointer = _allocator.allocate(x.size());
+					_endpointer = _startpointer + x.size();
+					_capacity = x.size();
 					*this = x;	// operator =
 				}
 				~vector ( void )
 				{
-					
+					for ( ; _startpointer != _endpointer ; )
+					{
+						_allocator.destroy(_endpointer - 1);
+						_endpointer--;
+					}
+					_allocator.deallocate(_startpointer, _capacity);
 				}
 
 				// ===================
@@ -256,9 +277,9 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
-					this->push_back(*(_endpointer - 1));
+					this->push_back(back());
 					size_type i = 0;
-					for ( ; _endpointer - i != position.bast() ; i++ )
+					for ( ; _endpointer - i != position.base() ; i++ )
 					{
 						this->_allocator.destroy(_endpointer - i );
 						this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
@@ -271,7 +292,7 @@ namespace ft
 				{
 					for (size_type range = 0 ; range < n ; range++ )
 					{
-						this->push_back(*(_endpointer - 1));
+						this->push_back(back());
 						size_type i = 0;
 						for ( ; _endpointer - i != position.base() ; i++ )
 						{
@@ -306,13 +327,10 @@ namespace ft
 				// =================
 				void push_back (const value_type& val)
 				{
-					if (this->size() < _capacity)
-					{
-						_endpointer++;
-						_allocator.construct(_endpointer - 1, val);
-					}
-					else
-						this->resize(this->size() + 1, val);
+					if (size() == _capacity)
+						this->reserve(2 * size());
+					_endpointer++;
+					_allocator.construct(_endpointer - 1, val);
 				}
 
 				// =================

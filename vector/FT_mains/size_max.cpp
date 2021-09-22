@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../vector.hpp"
 
-int	main( void )
+void test11( void )
 {
 	std::cout << "==== SIZE_MAX ====" << std::endl;
 	ft::vector<int>				vecti;
@@ -13,4 +13,9 @@ int	main( void )
 	std::cout << "double \t" << vectd.max_size() << std::endl;
 	std::cout << "char \t" << vectc.max_size() << std::endl;
 	std::cout << "string \t" << vects.max_size() << std::endl;
+}
+
+int	main(void)
+{
+	test11();
 }

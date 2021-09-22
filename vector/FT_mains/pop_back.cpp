@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../vector.hpp"
 
-int	main( void )
+void test8( void )
 {
 	std::cout << "==== POP_BACK ====" << std::endl;
 	// ==== POP_BACK ====
@@ -36,4 +36,9 @@ int	main( void )
 	for ( ; it != ite ; it++)
 		std::cout << " " << *it;
 	std::cout << std::endl;
+}
+
+int	main(void)
+{
+	test8();
 }

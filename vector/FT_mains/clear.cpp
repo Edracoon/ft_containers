@@ -17,8 +17,6 @@ void test3( void )
 
 	std::cout << "size after clear = " << vectint.size() << std::endl;
 
-	vectint.clear();
-
 	std::cout << "is empty ? " << vectint.empty() << std::endl;
 }
 

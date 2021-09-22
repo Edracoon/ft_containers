@@ -7,7 +7,7 @@
 namespace ft
 {
 	template< typename T >
-	class random_access_iterator 
+	class random_access_iterator
 	{
 		typedef iterator_traits<T> it;
 
@@ -45,17 +45,34 @@ namespace ft
 				random_access_iterator	operator++() {
 					return random_access_iterator(_pointer++);
 				}
-
 				random_access_iterator	operator++(int) {
 					pointer temp = _pointer;
 					_pointer++;
 					return random_access_iterator(temp);
 				}
 
-				difference_type operator-(const random_access_iterator & rhs) {
-					return (_pointer - rhs._pointer);
+				random_access_iterator	operator--() {
+					return random_access_iterator(_pointer--);
+				}
+				random_access_iterator	operator--(int) {
+					pointer temp = _pointer;
+					_pointer--;
+					return random_access_iterator(_pointer);
 				}
 
+				difference_type operator-(const random_access_iterator & rhs) const {
+					return (_pointer - rhs._pointer);
+				}
+				difference_type operator+(const random_access_iterator & rhs) const {
+					return (_pointer + rhs._pointer);
+				}
+
+				random_access_iterator operator-(difference_type n) const {
+					return random_access_iterator(_pointer - n);
+				}
+				random_access_iterator operator+(difference_type n) const {
+					return random_access_iterator(_pointer + n);
+				}
 				bool	operator!=( const random_access_iterator& rhs )
 				{ return ( this->_pointer == rhs._pointer ? false : true ); }
 				bool	operator==( const T& rhs ) const

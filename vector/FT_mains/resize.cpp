@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../vector.hpp"
 
-int	main( void )
+void test10( void )
 {
 	std::cout << "==== RESIZE ====" << std::endl;
 	// ======= RESIZE =======
@@ -41,4 +41,9 @@ int	main( void )
 	std::cout << '\n';
 
 	std::cout << "capacity = " << myvector.capacity() << std::endl;
+}
+
+int	main(void)
+{
+	test10();
 }

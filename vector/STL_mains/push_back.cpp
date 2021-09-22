@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-int	main( void )
+void test9( void )
 {
 	std::cout << "==== PUSH_BACK ====" << std::endl;
 	// ==== PUSH_BACK ====
@@ -35,4 +35,9 @@ int	main( void )
 	for ( ; it != ite ; it++)
 		std::cout << " " << *it;
 	std::cout << std::endl;
+}
+
+int	main(void)
+{
+	test9();
 }
