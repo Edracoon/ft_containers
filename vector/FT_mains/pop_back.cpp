@@ -3,6 +3,7 @@
 
 int	main( void )
 {
+	std::cout << "==== POP_BACK ====" << std::endl;
 	// ==== POP_BACK ====
 	ft::vector<int>	vectint;
 

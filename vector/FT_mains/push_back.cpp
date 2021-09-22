@@ -3,6 +3,7 @@
 
 int	main( void )
 {
+	std::cout << "==== PUSH_BACK ====" << std::endl;
 	// ==== PUSH_BACK ====
 	ft::vector<int>	vectint;
 	vectint.push_back(43);

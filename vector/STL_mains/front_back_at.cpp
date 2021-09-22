@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 
-int	main( void )
+void test4( void )
 {
+	std::cout << "==== FRONT_BACK_AT ====" << std::endl;
 	std::vector<int>				vecti;
 
 	vecti.push_back(12);
@@ -27,4 +28,9 @@ int	main( void )
 	for ( ; it != ite ; it++)
 		std::cout << " " << *it;
 	std::cout << std::endl << "size = " << vecti.size() << " capacity = " << vecti.capacity() << std::endl;
+}
+
+int	main(void)
+{
+	test4();
 }

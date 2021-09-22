@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 
-int	main( void )
+void test7( void )
 {
+	std::cout << "==== OPERATOR= ====" << std::endl;
 	std::vector<int>				vecti;
 
 	vecti.push_back(12);
@@ -28,4 +29,9 @@ int	main( void )
 		std::cout << *it << " ";
 	std::cout << std::endl << "vecty.size = " << vecty.size() << " vecty.capacity = " << vecty.capacity();
 	std::cout << std::endl << "vecti.size = " << vecti.size() << " vecti.capacity = " << vecti.capacity() << std::endl;
+}
+
+int	main(void)
+{
+	test7();
 }

@@ -3,6 +3,7 @@
 
 int	main( void )
 {
+	std::cout << "==== SIZE_MAX ====" << std::endl;
 	std::vector<int>				vecti;
 	std::vector<double>				vectd;
 	std::vector<char>				vectc;

@@ -1,8 +1,9 @@
 #include <iostream>
 #include "../vector.hpp"
 
-int	main( void )
+void	test1(void)
 {
+	std::cout << "==== ASSIGN ====" << std::endl;
 	ft::vector<int>				vecti;
 
 	vecti.push_back(32);
@@ -17,4 +18,9 @@ int	main( void )
 	for ( ; it != ite ; it++)
 		std::cout << " " << *it << std::endl;
 	std::cout << "size = " << vecti.size() << " capacity = " << vecti.capacity() << std::endl;
+}
+
+int	main( void )
+{
+	test1();
 }

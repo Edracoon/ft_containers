@@ -1,8 +1,9 @@
 #include <iostream>
 #include "../vector.hpp"
 
-int	main( void )
+void test2( void )
 {
+	std::cout << "==== BEGIN_END ====" << std::endl;
 	// =========================== 
 
 	ft::vector<int>		vectint(10);
@@ -36,4 +37,9 @@ int	main( void )
 		*it3 = 14;
 		it3++;
 	}
+}
+
+int	main( void )
+{
+	test2();
 }

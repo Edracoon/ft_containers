@@ -1,8 +1,9 @@
 #include <iostream>
 #include "../vector.hpp"
 
-int	main( void )
+void test5( void )
 {
+	std::cout << "==== INSERT_ASSIGN ====" << std::endl;
 	ft::vector<int>				vectint;
 
 	for ( int i = 0 ; i < 20 ; i++)
@@ -38,4 +39,9 @@ int	main( void )
 	for ( ; it != ite ; it++ )
 		std::cout << *it << " ";
 	std::cout << std::endl;
+}
+
+int	main(void)
+{
+	test5();
 }

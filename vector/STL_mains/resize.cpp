@@ -3,6 +3,7 @@
 
 int	main( void )
 {
+	std::cout << "==== RESIZE ====" << std::endl;
 	// ======= RESIZE =======
 
 	std::vector<int> myvector(10, 3);

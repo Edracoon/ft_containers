@@ -1,8 +1,9 @@
 #include <iostream>
 #include <vector>
 
-int	main( void )
+void test3( void )
 {
+	std::cout << "==== CLEAR ====" << std::endl;
 	std::vector<int>	vectint;
 
 	for (int i = 0 ; i < 10 ; i++)
@@ -19,4 +20,9 @@ int	main( void )
 	vectint.clear();
 
 	std::cout << "is empty ? " << vectint.empty() << std::endl;
+}
+
+int	main(void)
+{
+	test3();
 }
