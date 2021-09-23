@@ -9,7 +9,7 @@ void test4( void )
 	vecti.push_back(12);
 	vecti.push_back(42);
 	vecti.push_back(67);
-
+	std::cout << "size = " << vecti.size() << vecti.capacity() << std::endl;
 	std::cout << "front = " << vecti.front() << std::endl;
 	std::cout << "back = " << vecti.back() << std::endl;
 	

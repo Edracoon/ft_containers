@@ -79,7 +79,7 @@ namespace ft
 					_startpointer = _allocator.allocate(x.size());
 					_endpointer = _startpointer + x.size();
 					_capacity = x.size();
-					*this = x;	// operator =
+					*this = x;
 				}
 				~vector ( void )
 				{
@@ -327,10 +327,15 @@ namespace ft
 				// =================
 				void push_back (const value_type& val)
 				{
-					if (size() == _capacity)
+					if (_startpointer == NULL)
+						this->reserve(1);
+					if (size() >= _capacity)
 						this->reserve(2 * size());
-					_endpointer++;
-					_allocator.construct(_endpointer - 1, val);
+					if (size() < _capacity)
+					{
+						_endpointer++;
+						_allocator.construct(_endpointer - 1, val);
+					}
 				}
 
 				// =================
@@ -347,9 +352,9 @@ namespace ft
 				// =================
 				void assign (size_type n, const value_type& val)	// FILL OVERLOAD
 				{
-					// destruct des elements deja presents
 					this->clear();
-					this->resize(n, val);
+					this->reserve(n);
+					this->insert(_startpointer, n, val);
 				}
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type assign(InputIterator first, InputIterator last)	// RANGE OVERLOAD
@@ -363,7 +368,10 @@ namespace ft
 					}
 					else
 					{
-						this->reserve(dist);
+						_allocator.deallocate(_startpointer, _capacity);
+						_startpointer = _allocator.allocate(dist);
+						_endpointer = _startpointer;
+						_capacity = dist;
 						for ( ; first != last ; first++) {
 							_allocator.construct(_endpointer, *first);
 							_endpointer++;

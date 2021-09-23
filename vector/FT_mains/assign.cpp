@@ -9,7 +9,7 @@ void	test1(void)
 	vecti.push_back(32);
 	vecti.push_back(634);
 	vecti.push_back(12);
-	
+
 	vecti.assign(50, 100);
 	vecti.assign(4, 10);
 
