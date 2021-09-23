@@ -28,9 +28,9 @@ namespace ft
 				typedef random_access_iterator<pointer>								iterator;			
 				typedef random_access_iterator<const_pointer>						const_iterator;
 				typedef reverse_iterator<iterator>									reverse_iterator;
-				// typedef ft::const_reverse_iterator<const_iterator>					const_reverse_iterator;
+				// typedef const_reverse_iterator<const_iterator>						const_reverse_iterator;
 
-				typedef	typename allocator_type::difference_type	 				difference_type;
+				typedef	typename allocator_type::difference_type					difference_type;
 				
 		protected:
 					pointer			_startpointer;	// first elem
@@ -68,17 +68,17 @@ namespace ft
 							typename enable_if< !is_integral<InputIterator>::value, int>::type = 0 )
 				{
 					size_type dist = std::distance(first, last);
-					_allocator = alloc;
-					_startpointer = _allocator.allocate(dist);
-					_endpointer = _startpointer + dist;
-					_capacity = dist;
+					_allocator			= alloc;
+					_startpointer		= _allocator.allocate(dist);
+					_endpointer			= _startpointer + dist;
+					_capacity			= dist;
 					this->assign(first, last);
 				}
 				vector (const vector& x) : _allocator(x._allocator) // copy
 				{
-					_startpointer = _allocator.allocate(x.size());
-					_endpointer = _startpointer + x.size();
-					_capacity = x.size();
+					_startpointer		= _allocator.allocate(x.size());
+					_endpointer			= _startpointer + x.size();
+					_capacity			= x.size();
 					*this = x;
 				}
 				~vector ( void )
@@ -231,7 +231,7 @@ namespace ft
 					pointer	oldstart			= this->_startpointer;
 					size_type oldsize			= this->size();
 					size_type oldcapacity		= this->capacity();
-					
+
 					if (n < (this->size()))
 					{
 						for ( pointer it = this->_startpointer + n ; it != this->_endpointer ; it++ )
@@ -277,6 +277,11 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
+					if (position == NULL)
+					{
+						reserve(1);
+						position = _startpointer;
+					}
 					this->push_back(back());
 					size_type i = 0;
 					for ( ; _endpointer - i != position.base() ; i++ )
@@ -290,6 +295,11 @@ namespace ft
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
 				{
+					if (position == NULL)
+					{
+						reserve(1);
+						position = _startpointer;
+					}
 					for (size_type range = 0 ; range < n ; range++ )
 					{
 						this->push_back(back());
@@ -306,6 +316,11 @@ namespace ft
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
+					if (position == NULL)
+					{
+						reserve(1);
+						position = _startpointer;
+					}
 					size_type n = std::distance(first, last);
 					for (size_type range = 0 ; range < n ; range++ )
 					{
@@ -318,7 +333,7 @@ namespace ft
 						}
 						this->_allocator.destroy(_endpointer - i + range);
 						this->_allocator.construct(_endpointer - i + range, *first);
-						//first++;
+						first++;
 					}
 				}
 
@@ -395,7 +410,7 @@ namespace ft
 					}
 					else if (pos != _endpointer)
 					{
-						for ( ; i + *position < this->size() ; i++ ) {
+						for ( ; position.base() + i != _endpointer ; i++ ) {
 							_allocator.construct(pos + i, *(position.base() + i + 1));
 							_allocator.destroy(pos + i + 1);
 						}

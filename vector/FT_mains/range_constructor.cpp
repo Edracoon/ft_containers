@@ -3,6 +3,7 @@
 
 void	test12(void)
 {
+	std::cout << "==== RANGE_CONSTRUCTOR ====" << std::endl;
 	ft::vector<int>		vectint;
 
 	for (int i = 0 ; i < 20 ; i++)
@@ -20,8 +21,8 @@ void	test12(void)
 	std::cout << "vectint.size = " << vectint.size() << " vectint.capacity() = " << vectint.capacity() << std::endl;
 	std::cout << "range.size = " << range.size() << " range.capacity() = " << range.capacity() << std::endl;
 
-	std::cout << "vectint.begin() = " << *(vectint.begin()) << " vectint.end() = " << *(vectint.end()) << std::endl;
-	std::cout << "range.begin() = " << *(range.begin()) << " range.end() = " << *(range.end()) << std::endl;
+	std::cout << "vectint.begin() = " << *(vectint.begin()) << std::endl;
+	std::cout << "range.begin() = " << *(range.begin()) << std::endl;
 }
 
 int	main(void)
