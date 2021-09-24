@@ -16,46 +16,46 @@ namespace ft
 	{
 		public:
 				typedef	T															value_type;
-				// Template pour le type d'allocator, par defaut set à : std::allocator<T> 
-				typedef	Alloc														allocator_type;// std::allocator
-				typedef typename allocator_type::reference							reference;// value_type&
-				typedef typename allocator_type::const_reference					const_reference;// value_type*
-				typedef typename allocator_type::pointer							pointer;
-				typedef typename allocator_type::const_pointer						const_pointer;
-				// same as ptrdiff_t
+
+				// Template pour le type d'allocator, par defaut = std::allocator<T> 
+				typedef	Alloc														allocator_type;	// std::allocator
+
+				typedef typename allocator_type::reference							reference;		// value_type&
+				typedef typename allocator_type::const_reference					const_reference;// value_type& const 
+				typedef typename allocator_type::pointer							pointer;		// value_type*
+				typedef typename allocator_type::const_pointer						const_pointer;	// value_type* const
+			
 				typedef size_t														size_type;
+			
 				// typedef pour les iterators
-				typedef random_access_iterator<pointer>								iterator;			
-				typedef random_access_iterator<const_pointer>						const_iterator;
-				typedef reverse_iterator<iterator>									reverse_iterator;
-				// typedef const_reverse_iterator<const_iterator>						const_reverse_iterator;
+				typedef ft::random_access_iterator<pointer>								iterator;
+				typedef ft::random_access_iterator<const_pointer>						const_iterator;
+				typedef ft::reverse_iterator<iterator>									reverse_iterator;
+				typedef ft::reverse_iterator<const_iterator>							const_reverse_iterator;
 
 				typedef	typename allocator_type::difference_type					difference_type;
 				
 		protected:
 					pointer			_startpointer;	// first elem
 					pointer			_endpointer;	// last elem + 1
-					pointer			_endmaxpointer;	// double size in case of reallocation
 					allocator_type	_allocator;		// allocateur selon son type pour utiliser ses fonctions
 					size_type		_capacity;		// 
 		public:
-				explicit 
+				explicit
 				vector (const allocator_type& alloc = allocator_type())
 				{
 					this->_allocator		= alloc;
 					this->_startpointer		= NULL;
 					this->_endpointer		= NULL;
-					this->_endmaxpointer	= NULL;
 					this->_capacity			= 0;
 				}
-				explicit 
+				explicit
 				vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 				{
 					this->_allocator		= alloc;
 					this->_capacity			= n;
 					this->_startpointer		= this->_allocator.allocate(_capacity);
 					this->_endpointer		= _startpointer;
-					this->_endmaxpointer	= _endpointer + n;
 					while (n)
 					{
 						_allocator.construct(_endpointer, (const_reference)val);
@@ -97,20 +97,24 @@ namespace ft
 				iterator begin( void ) {
 					return (iterator(this->_startpointer));
 				}
-				const_iterator	begin( void ) const {
-					return (const_iterator(this->_startpointer));
-				}
 				iterator	end( void ) {
 					return (iterator(this->_endpointer));
+				}
+
+				// const begin - const end
+				const_iterator	begin( void ) const {
+					return (const_iterator(this->_startpointer));
 				}
 				const_iterator	end( void ) const {
 					return (const_iterator(this->_endpointer));
 				}
+
+				// rbegin - rend
 				reverse_iterator rbegin( void ) {
-					return reverse_iterator(_endpointer - 1);	// last elem
+					return reverse_iterator(end());	// last elem
 				}
 				reverse_iterator rend( void ) {
-					return reverse_iterator(_startpointer - 1);	// before the first elem to simulate a end()
+					return reverse_iterator(begin());	// before the first elem to simulate a end()
 				}
 
 				// ====================
@@ -187,10 +191,6 @@ namespace ft
 					x._endpointer				= this->_endpointer;
 					this->_endpointer			= temp;
 
-					temp						= x._endmaxpointer;	// swap endmax
-					x._endmaxpointer			= this->_endmaxpointer;
-					this->_endmaxpointer		= temp;
-
 					size_type temp_s			= x._capacity;		// swap capacity
 					x._capacity					= this->_capacity;
 					this->_capacity				= temp_s;
@@ -208,7 +208,6 @@ namespace ft
 						return ;
 					_capacity = n;
 					this->_startpointer		= _allocator.allocate(n);
-					this->_endmaxpointer	= _startpointer + _capacity;
 					this->_endpointer		= _startpointer;
 					size_type i = 0;
 					// construction avec la new taille
@@ -251,7 +250,6 @@ namespace ft
 							_capacity = n;
 						this->_startpointer		= _allocator.allocate(_capacity);
 						this->_endpointer		= _startpointer + n;
-						this->_endmaxpointer	= _startpointer + _capacity;
 
 						size_type i = 0;
 						// construction avec la new taille
