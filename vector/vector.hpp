@@ -277,7 +277,7 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
-					if (position == NULL)
+					if (position.base() == NULL)
 					{
 						reserve(1);
 						position = _startpointer;
@@ -295,7 +295,7 @@ namespace ft
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
 				{
-					if (position == NULL)
+					if (position.base() == NULL)
 					{
 						reserve(1);
 						position = _startpointer;
@@ -316,7 +316,7 @@ namespace ft
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
-					if (position == NULL)
+					if (position.base() == NULL)
 					{
 						reserve(1);
 						position = _startpointer;
@@ -487,44 +487,19 @@ namespace ft
 	// NON MEMBER OPERATORS
 	// ====================
 	
-	// == et !=
+	// ==
 	template <class T, class Alloc>
 	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
 		if (lhs.size() != rhs.size()) return (false);	// check size first
-
-		typename ft::vector<T>::iterator	it		= lhs.begin();
-		typename ft::vector<T>::iterator	ite		= lhs.end();
-		typename ft::vector<T>::iterator	it2		= rhs.begin();
-		typename ft::vector<T>::iterator	ite2	= rhs.end();
-
-		while ( it != ite || it2 != ite2 )
-		{
-			if (*it != *it2) return (false);	// check every value
-			it++;
-			it2++;
-		}
-		return (true);
+		return (equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
+
+	// !=
 	template <class T, class Alloc>
 	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
-		return (!(lhs == rhs));	// operator==
-	}
-
-	template <class InputIterator1, class InputIterator2>
-	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
-	{
-		while (first1!=last1)
-		{
-			if (first2 == last2 || *first2 < *first1)
-				return (false);
-			else if (*first1 < *first2)
-				return (true);
-			++first1;
-			++first2;
-		}
-		return ( first2 != last2 );
+		return (!(lhs == rhs));
 	}
 
 	// < et >
