@@ -201,12 +201,13 @@ namespace ft
 				// ===============
 				void reserve (size_type n)
 				{
+					if (n <= this->capacity())
+						return ;
 					pointer	oldstart			= this->_startpointer;
 					size_type oldsize			= this->size();
 					size_type oldcapacity		= this->capacity();
-					if (n <= this->capacity())
-						return ;
-					_capacity = n;
+					
+					this->_capacity			= n;
 					this->_startpointer		= _allocator.allocate(n);
 					this->_endpointer		= _startpointer;
 					size_type i = 0;
@@ -275,31 +276,51 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
+					// std::cout << position.base() << std::endl;
+					if (position.base() == _endpointer)
+						this->push_back(val);
 					if (position.base() == NULL)
-					{
-						reserve(1);
-						position = _startpointer;
-					}
-					this->push_back(back());
-					size_type i = 0;
-					for ( ; _endpointer - i != position.base() ; i++ )
-					{
-						this->_allocator.destroy(_endpointer - i );
-						this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
-					}
-					this->_allocator.destroy(_endpointer - i);
-					this->_allocator.construct(_endpointer - i, val);
+						return (position);
+					if (this->_startpointer == NULL)
+						this->reserve(1);
+
+					std::cout << *position << std::endl;
+					std::cout << "position - start = " << std::distance(begin(), position) << std::endl;
+
+					ft::vector<value_type>	temp;
+					temp.assign(this->begin(), position);
+					temp.push_back(val);
+
+					// if (position.base() == NULL)
+					// {
+					// 	reserve(1);
+					// 	position = _startpointer;
+					// }
+					// if (position.base() == _endpointer)
+					// {
+					// 	if (_capacity == size())
+					// 		this->reserve(_capacity * 2);
+					// 	_endpointer++;
+					// 	this->_allocator.construct(_endpointer - 1, val);
+					// 	return (position);
+					// }
+					// this->push_back(back());
+					// size_type i = 0;
+					// for ( ; _endpointer - i != position.base() ; i++ )
+					// {
+					// 	this->_allocator.destroy(_endpointer - i );
+					// 	this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
+					// }
+					// this->_allocator.destroy(_endpointer - i);
+					// this->_allocator.construct(_endpointer - i, val);
 					return (position);
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
 				{
-					if (position.base() == NULL)
-					{
-						reserve(1);
-						position = _startpointer;
-					}
 					for (size_type range = 0 ; range < n ; range++ )
 					{
+						//this->insert(position, val);
+						//position++;
 						this->push_back(back());
 						size_type i = 0;
 						for ( ; _endpointer - i != position.base() ; i++ )
@@ -314,14 +335,11 @@ namespace ft
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
-					if (position.base() == NULL)
-					{
-						reserve(1);
-						position = _startpointer;
-					}
 					size_type n = std::distance(first, last);
 					for (size_type range = 0 ; range < n ; range++ )
 					{
+						//this->insert(position, first[range]);
+						//position++;
 						this->push_back(*(_endpointer - 1));
 						size_type i = 0;
 						for ( ; _endpointer - i != position.base() ; i++ )

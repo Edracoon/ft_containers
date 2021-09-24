@@ -156,7 +156,6 @@ namespace ft
 					const ft::random_access_iterator<Iterator2>& rhs){
 		return (lhs.base() >= rhs.base());
 	}
-// ====================================================================================
 
 	// =================================
 	// ======= REVERSE_ITERATOR ========
@@ -188,12 +187,12 @@ namespace ft
 					return (this->_base_it);
 				}
 
-				pointer operator->() const {
-					return &(operator*());
-				}
 				reference operator*() const {
 					iterator_type	cpy = _base_it;
 					return (*(--cpy));
+				}
+				pointer operator->() const {
+					return &(operator*());
 				}
 
 				// ++ et --
@@ -248,8 +247,8 @@ namespace ft
 	}
 	template <class Iterator1, class Iterator2>
 	typename reverse_iterator<Iterator1>::difference_type operator- (
-								const reverse_iterator<Iterator1>& lhs,
-									const reverse_iterator<Iterator2>& rhs) {
+					const reverse_iterator<Iterator1>& lhs,
+						const reverse_iterator<Iterator2>& rhs) {
 		return (rhs.base() - lhs.base());
 	}
 
