@@ -3,10 +3,10 @@
 
 # include <iostream>
 # include <memory>
-# include "iterator.hpp"
+# include "../iterator/iterator.hpp"
 # include <iterator>	// std::distance
-# include <tgmath.h>
-# include "utils.hpp"
+// # include <tgmath.h>
+# include "../utils.hpp"
 
 namespace ft
 {
@@ -28,10 +28,10 @@ namespace ft
 				typedef size_t														size_type;
 			
 				// typedef pour les iterators
-				typedef ft::random_access_iterator<pointer>								iterator;
-				typedef ft::random_access_iterator<const_pointer>						const_iterator;
-				typedef ft::reverse_iterator<iterator>									reverse_iterator;
-				typedef ft::reverse_iterator<const_iterator>							const_reverse_iterator;
+				typedef ft::random_access_iterator<pointer>							iterator;
+				typedef ft::random_access_iterator<const_pointer>					const_iterator;
+				typedef ft::reverse_iterator<iterator>								reverse_iterator;
+				typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 				typedef	typename allocator_type::difference_type					difference_type;
 				
@@ -41,7 +41,10 @@ namespace ft
 					allocator_type	_allocator;		// allocateur selon son type pour utiliser ses fonctions
 					size_type		_capacity;		// 
 		public:
-				explicit
+				// ===================
+				// DEFAULT CONSTRUCTOR
+				// ===================
+				explicit	
 				vector (const allocator_type& alloc = allocator_type())
 				{
 					this->_allocator		= alloc;
@@ -49,8 +52,12 @@ namespace ft
 					this->_endpointer		= NULL;
 					this->_capacity			= 0;
 				}
+
+				// ================
+				// FILL CONSTRUCTOR
+				// ================
 				explicit
-				vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+				vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) 
 				{
 					this->_allocator		= alloc;
 					this->_capacity			= n;
@@ -63,24 +70,36 @@ namespace ft
 						n--;
 					}
 				}
-				template <class InputIterator>
+
+				// =================
+				// RANGE CONSTRUCTOR
+				// =================
+				template <class InputIterator>	
 				vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
 							typename enable_if< !is_integral<InputIterator>::value, int>::type = 0 )
 				{
-					size_type dist = std::distance(first, last);
+					size_type dist		= std::distance(first, last);
 					_allocator			= alloc;
 					_startpointer		= _allocator.allocate(dist);
 					_endpointer			= _startpointer + dist;
 					_capacity			= dist;
 					this->assign(first, last);
 				}
-				vector (const vector& x) : _allocator(x._allocator) // copy
+
+				// ================
+				// COPY CONSTRUCTOR
+				// ================
+				vector (const vector& x) : _allocator(x._allocator)			
 				{
 					_startpointer		= _allocator.allocate(x.size());
 					_endpointer			= _startpointer + x.size();
 					_capacity			= x.size();
 					*this = x;
 				}
+
+				// ==========
+				// DESTRUCTOR
+				// ==========
 				~vector ( void )
 				{
 					for ( ; _startpointer != _endpointer ; )
@@ -153,12 +172,14 @@ namespace ft
 				size_type	size( void ) const {
 					return (this->_endpointer - this->_startpointer);
 				}
+
 				// ================
 				// === CAPACITY ===
 				// ================
 				size_type capacity( void ) const {
 					return (this->_capacity);
 				}
+
 				// ================
 				// === MAX_SIZE ===
 				// ================
@@ -167,6 +188,7 @@ namespace ft
 						return (_allocator.max_size() / 2);
 					return (_allocator.max_size());
 				}
+
 				// =================
 				// === GET_ALLOC ===
 				// =================
@@ -276,81 +298,67 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
-					// std::cout << position.base() << std::endl;
-					if (position.base() == _endpointer)
-						this->push_back(val);
-					if (position.base() == NULL)
-						return (position);
-					if (this->_startpointer == NULL)
-						this->reserve(1);
-
-					std::cout << *position << std::endl;
-					std::cout << "position - start = " << std::distance(begin(), position) << std::endl;
-
-					ft::vector<value_type>	temp;
-					temp.assign(this->begin(), position);
-					temp.push_back(val);
-
-					// if (position.base() == NULL)
-					// {
-					// 	reserve(1);
-					// 	position = _startpointer;
-					// }
-					// if (position.base() == _endpointer)
-					// {
-					// 	if (_capacity == size())
-					// 		this->reserve(_capacity * 2);
-					// 	_endpointer++;
-					// 	this->_allocator.construct(_endpointer - 1, val);
-					// 	return (position);
-					// }
-					// this->push_back(back());
-					// size_type i = 0;
-					// for ( ; _endpointer - i != position.base() ; i++ )
-					// {
-					// 	this->_allocator.destroy(_endpointer - i );
-					// 	this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
-					// }
-					// this->_allocator.destroy(_endpointer - i);
-					// this->_allocator.construct(_endpointer - i, val);
+					size_type tmp2 = 0;
+					if (position.base() != NULL && position.base() < _startpointer)	// Si pos inferieur a start -> pos = start
+						position = _startpointer;
+					else if (position.base() != NULL && position.base() > _endpointer)	// Si pos superieur a end -> pos = end
+						position = _endpointer;
+					else if (position.base() == NULL)	// cas ou position = NULL
+					{
+						reserve(1);
+						push_back(val);
+						return (_endpointer - 1);
+					}
+					else if (position.base() == _endpointer && position.base() != _startpointer)
+					{
+						push_back(val);
+						return (_endpointer - 1);
+					}
+					tmp2 = position.base() - _startpointer;
+					push_back(*(_endpointer - 1));
+					position = _startpointer + tmp2;
+					pointer tmp = _endpointer - 1;
+					for(; tmp != (_startpointer + tmp2); tmp--)
+					{
+							_allocator.destroy(tmp);
+							_allocator.construct(tmp, *(tmp - 1));
+					}
+					_allocator.destroy(position.base());
+					_allocator.construct(position.base(), val);
 					return (position);
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
 				{
-					for (size_type range = 0 ; range < n ; range++ )
-					{
-						//this->insert(position, val);
-						//position++;
-						this->push_back(back());
-						size_type i = 0;
-						for ( ; _endpointer - i != position.base() ; i++ )
-						{
-							this->_allocator.destroy(_endpointer - i );
-							this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
-						}
-						this->_allocator.destroy(_endpointer - i + range);
-						this->_allocator.construct(_endpointer - i + range, val);
-					}
+					size_type	conserv = position - _startpointer; // stockage de la position dans le cas d'une reallocation
+					if (_startpointer == NULL)
+						this->reserve(n);
+					if (_startpointer != NULL && _capacity < size() + n)
+						this->reserve(n + size());
+					if (position.base() == NULL)
+							reserve(1);
+					if (position.base() != NULL && position.base() < _startpointer)
+						position = _startpointer;
+					else if (position.base() != NULL && position.base() > _endpointer)
+						position = _endpointer;
+					iterator pos = _startpointer + conserv;
+					while (n--)
+						pos = insert(pos, val);
 				}
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
-					size_type n = std::distance(first, last);
-					for (size_type range = 0 ; range < n ; range++ )
-					{
-						//this->insert(position, first[range]);
-						//position++;
-						this->push_back(*(_endpointer - 1));
-						size_type i = 0;
-						for ( ; _endpointer - i != position.base() ; i++ )
-						{
-							this->_allocator.destroy(_endpointer - i );
-							this->_allocator.construct(_endpointer - i, *(_endpointer - i - 1));
-						}
-						this->_allocator.destroy(_endpointer - i + range);
-						this->_allocator.construct(_endpointer - i + range, *first);
-						first++;
-					}
+					size_type	conserv = position - _startpointer; // stockage de la position dans le cas d'une reallocation
+					if (_startpointer == NULL)
+						reserve(std::distance(first, last));
+					if (_startpointer != NULL && _capacity < size() + std::distance(first, last))
+						reserve(size() + std::distance(first, last));
+					if (position.base() != NULL && position.base() < _startpointer)
+						position = _startpointer;
+					else if (position.base() != NULL && position.base() > _endpointer)
+						position = _endpointer;
+					iterator pos = _startpointer + conserv;
+					for (; first != last; first++)
+						pos = insert(pos, *(first)) + 1;
 				}
 
 				// =================
