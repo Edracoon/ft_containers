@@ -24,6 +24,8 @@ namespace ft
 				typedef typename allocator_type::const_reference					const_reference;// value_type& const 
 				typedef typename allocator_type::pointer							pointer;		// value_type*
 				typedef typename allocator_type::const_pointer						const_pointer;	// value_type* const
+				
+				typedef	typename allocator_type::difference_type					difference_type;// ptrdiff_t
 			
 				typedef size_t														size_type;
 			
@@ -32,8 +34,6 @@ namespace ft
 				typedef ft::random_access_iterator<const_pointer>					const_iterator;
 				typedef ft::reverse_iterator<iterator>								reverse_iterator;
 				typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
-
-				typedef	typename allocator_type::difference_type					difference_type;
 				
 		protected:
 					pointer			_startpointer;	// first elem
@@ -94,7 +94,7 @@ namespace ft
 					_startpointer		= _allocator.allocate(x.size());
 					_endpointer			= _startpointer + x.size();
 					_capacity			= x.size();
-					*this = x;
+					*this = x;	// assign
 				}
 
 				// ==========
@@ -134,6 +134,14 @@ namespace ft
 				}
 				reverse_iterator rend( void ) {
 					return reverse_iterator(begin());	// before the first elem to simulate a end()
+				}
+
+				// const rbegin - const rend
+				const_reverse_iterator rbegin( void ) const {
+					return const_reverse_iterator(end());	// last elem
+				}
+				const_reverse_iterator rend( void ) const {
+					return const_reverse_iterator(begin());	// before the first elem to simulate a end()
 				}
 
 				// ====================
@@ -223,6 +231,8 @@ namespace ft
 				// ===============
 				void reserve (size_type n)
 				{
+					// if (n > max_size())
+					// 	return ;
 					if (n <= this->capacity())
 						return ;
 					pointer	oldstart			= this->_startpointer;
@@ -298,7 +308,11 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
-					size_type tmp2 = 0;
+					size_type	conserv = position - _startpointer;
+					if (_startpointer == NULL)
+						this->reserve(1);
+					if (_startpointer != NULL && _capacity < size() + 1)
+						this->reserve(_capacity * 2);
 					if (position.base() != NULL && position.base() < _startpointer)	// Si pos inferieur a start -> pos = start
 						position = _startpointer;
 					else if (position.base() != NULL && position.base() > _endpointer)	// Si pos superieur a end -> pos = end
@@ -314,18 +328,33 @@ namespace ft
 						push_back(val);
 						return (_endpointer - 1);
 					}
-					tmp2 = position.base() - _startpointer;
-					push_back(*(_endpointer - 1));
-					position = _startpointer + tmp2;
-					pointer tmp = _endpointer - 1;
-					for(; tmp != (_startpointer + tmp2); tmp--)
-					{
-							_allocator.destroy(tmp);
-							_allocator.construct(tmp, *(tmp - 1));
+
+					ft::vector<value_type>		vector_temp;
+					vector_temp._startpointer	= _allocator.allocate(this->_capacity);
+					vector_temp._capacity		= _capacity;
+					vector_temp._endpointer		= vector_temp._startpointer;
+
+					pointer		pos = vector_temp._startpointer + conserv;	// on recup la nouvelle position en cas de reallocation
+
+					pointer		save_start = _startpointer;	// conserver le _start pour permettre le swap a la fin
+
+					for ( ; vector_temp._endpointer != pos ; ) {
+						vector_temp._allocator.construct(vector_temp._endpointer, *_startpointer);
+						vector_temp._endpointer++;
+						_startpointer++;
 					}
-					_allocator.destroy(position.base());
-					_allocator.construct(position.base(), val);
-					return (position);
+					vector_temp._allocator.construct(vector_temp._endpointer, val);
+					vector_temp._endpointer++;
+					for ( ; _startpointer != _endpointer ; ) {
+						vector_temp._allocator.construct(vector_temp._endpointer, *_startpointer);
+						_startpointer++;
+						vector_temp._endpointer++;
+					}
+					// _allocator.deallocate(save_start, _capacity);
+					_startpointer = save_start;
+					this->swap(vector_temp);
+					// vector_temp._allocator.deallocate(vector_temp._startpointer, vector_temp._capacity);
+					return (_startpointer + conserv);
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
 				{
@@ -344,32 +373,84 @@ namespace ft
 						position = _startpointer;
 					else if (position.base() != NULL && position.base() > _endpointer)
 						position = _endpointer;
-					iterator pos = _startpointer + conserv;
-					while (n--)
-						pos = insert(pos, val);
+
+					// Methode du vector temporaire pour insert
+					ft::vector<value_type>		vector_temp;
+					vector_temp._startpointer	= _allocator.allocate(this->_capacity);
+					vector_temp._capacity		= _capacity;
+					vector_temp._endpointer		= vector_temp._startpointer;
+
+					pointer		pos = vector_temp._startpointer + conserv;	// nouvelle position en cas de reallocation
+					pointer		save_start = _startpointer;					// save le start pour faire le swap a la fin
+
+					// construction dans le vector temporaire : de start à pos
+					for ( ; vector_temp._endpointer != pos ; ) {
+						vector_temp._allocator.construct(vector_temp._endpointer, *_startpointer);
+						vector_temp._endpointer++;
+						_startpointer++;
+					}
+					// construction dans le vector temporaire : de pos à n pour les nouvelle valeurs
+					for (size_type i = 0 ; i < n ; i++) {
+						vector_temp._allocator.construct(vector_temp._endpointer, val);
+						vector_temp._endpointer++;
+					}
+					// construction dans le vector temporaire des valeurs de mon ancien vector de pos à end
+					for ( ; _startpointer != _endpointer ; ) {
+						vector_temp._allocator.construct(vector_temp._endpointer, *_startpointer);
+						_startpointer++;
+						vector_temp._endpointer++;
+					}
+					// _allocator.deallocate(save_start, _capacity);
+					_startpointer = save_start;	// on redonne le bon start
+					this->swap(vector_temp);	// swap
 				}
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
 					size_type	conserv = position - _startpointer; // stockage de la position dans le cas d'une reallocation
+					size_type	dist	= std::distance(first, last);
 					if (size() == 0)
-						reserve(std::distance(first, last));
+						reserve(dist);
 					if (_capacity)
 					if (_startpointer == NULL)
-						reserve(std::distance(first, last));
-					if (_startpointer != NULL && _capacity < size() + std::distance(first, last))
+						reserve(dist);
+					if (_startpointer != NULL && _capacity < size() + dist)
 					{
 						reserve(_capacity * 2);
-						if (_capacity < size() + std::distance(first, last))
-							this->reserve(size() + std::distance(first, last));
+						if (_capacity < size() + dist)
+							this->reserve(size() + dist);
 					}
 					if (position.base() != NULL && position.base() < _startpointer)
 						position = _startpointer;
 					else if (position.base() != NULL && position.base() > _endpointer)
 						position = _endpointer;
-					iterator pos = _startpointer + conserv;
-					for (; first != last; first++)
-						pos = insert(pos, *(first)) + 1;
+
+					ft::vector<value_type>		vector_temp;
+					vector_temp._startpointer	= _allocator.allocate(this->_capacity);
+					vector_temp._capacity		= _capacity;
+					vector_temp._endpointer		= vector_temp._startpointer;
+
+					pointer		pos = vector_temp._startpointer + conserv;	// on recup la nouvelle position en cas de reallocation
+
+					pointer		save_start = _startpointer;	// conserver le _start pour permettre le swap a la fin
+
+					for ( ; vector_temp._endpointer != pos ; ) {
+						vector_temp._allocator.construct(vector_temp._endpointer, *_startpointer);
+						vector_temp._endpointer++;
+						_startpointer++;
+					}
+					for (size_type i = 0 ; i < dist ; i++) {
+						vector_temp._allocator.construct(vector_temp._endpointer, *first++);
+						vector_temp._endpointer++;
+					}
+					for ( ; _startpointer != _endpointer ; ) {
+						vector_temp._allocator.construct(vector_temp._endpointer, *_startpointer);
+						_startpointer++;
+						vector_temp._endpointer++;
+					}
+					// _allocator.deallocate(save_start, _capacity);
+					_startpointer = save_start;
+					this->swap(vector_temp);
 				}
 
 				// =================
@@ -403,8 +484,24 @@ namespace ft
 				void assign (size_type n, const value_type& val)	// FILL OVERLOAD
 				{
 					this->clear();
-					this->reserve(n);
-					this->insert(_startpointer, n, val);
+					if (n > _capacity)
+					{
+						_allocator.deallocate(_startpointer, _capacity);
+						_startpointer = _allocator.allocate(n);
+						_capacity = n;
+						_endpointer = _startpointer;
+						for (size_type i = 0 ; i < n ; i++) {
+							_allocator.construct(_endpointer, val);
+							_endpointer++;
+						}
+					}
+					else
+					{
+						for (size_type i = 0 ; i < n ; i++) {
+							_allocator.construct(_endpointer, val);
+							_endpointer++;
+						}
+					}
 				}
 				template <class InputIterator>
 				typename enable_if< !is_integral<InputIterator>::value, void>::type assign(InputIterator first, InputIterator last)	// RANGE OVERLOAD
@@ -526,8 +623,9 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
-		if (lhs.size() != rhs.size()) return (false);	// check size first
-		return (equal(lhs.begin(), lhs.end(), rhs.begin()));
+		if (lhs.size() != rhs.size())
+			return (false);
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
 	// !=
