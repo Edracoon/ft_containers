@@ -333,7 +333,11 @@ namespace ft
 					if (_startpointer == NULL)
 						this->reserve(n);
 					if (_startpointer != NULL && _capacity < size() + n)
-						this->reserve(n + size());
+					{
+						this->reserve(_capacity * 2);
+						if (_capacity < size() + n)
+							this->reserve(size() + n);
+					}
 					if (position.base() == NULL)
 							reserve(1);
 					if (position.base() != NULL && position.base() < _startpointer)
@@ -348,10 +352,17 @@ namespace ft
 				typename enable_if< !is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last)	// RANGE
 				{
 					size_type	conserv = position - _startpointer; // stockage de la position dans le cas d'une reallocation
+					if (size() == 0)
+						reserve(std::distance(first, last));
+					if (_capacity)
 					if (_startpointer == NULL)
 						reserve(std::distance(first, last));
 					if (_startpointer != NULL && _capacity < size() + std::distance(first, last))
-						reserve(size() + std::distance(first, last));
+					{
+						reserve(_capacity * 2);
+						if (_capacity < size() + std::distance(first, last))
+							this->reserve(size() + std::distance(first, last));
+					}
 					if (position.base() != NULL && position.base() < _startpointer)
 						position = _startpointer;
 					else if (position.base() != NULL && position.base() > _endpointer)
