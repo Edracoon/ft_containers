@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../vector.hpp"
+#include "../../vector.hpp"
 
 void test6( void )
 {

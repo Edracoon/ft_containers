@@ -157,6 +157,93 @@ namespace ft
 		return (lhs.base() >= rhs.base());
 	}
 
+
+	// =================================
+	// ==== BIDIRECTIONAL ITERATOR =====
+	// =================================
+	template< typename T >
+	class bidirectional_iterator
+	{
+		private:
+				// recup traits macro
+				typedef iterator_traits<T> it;
+		public:
+				// typedef macro
+				typedef typename it::value_type				value_type;
+				typedef typename it::pointer				pointer;
+				typedef typename it::reference				reference;
+				typedef typename it::difference_type		difference_type;
+				typedef typename it::iterator_category		iterator_category;
+		protected:
+				pointer	_pointer;
+		public:
+				bidirectional_iterator( void ) { _pointer = NULL; }											 // default
+				bidirectional_iterator( pointer pointer ) { _pointer = pointer; }							 // param
+				template <class Iter>
+				bidirectional_iterator (const bidirectional_iterator<Iter> & rhs) : _pointer(rhs.base()) { } // copy
+				~bidirectional_iterator( void ) {  }														 // destruct
+
+				// recup le pointer de l'iterator (conversion plus simple que &(*(iterator)))
+				pointer base(void) const
+				{
+					return this->_pointer;
+				}
+
+				// assignation
+				template <class Iterator>
+				bidirectional_iterator& operator= (const bidirectional_iterator<Iterator>& rhs) {
+					this->_pointer = rhs.base();
+					return (*this);
+				}
+
+				// *
+				reference operator* () {
+					return (*_pointer);
+				}
+				reference operator* () const {
+					return (*_pointer);
+				}
+
+				// ->
+				pointer operator->() const {
+					return &(operator*());
+				}
+
+				// ++
+				bidirectional_iterator&	operator++() {
+					_pointer++;
+					return (*this);
+				}
+				bidirectional_iterator	operator++(int) {
+					bidirectional_iterator temp(*this);
+					_pointer++;
+					return (temp);
+				}
+
+				// --
+				bidirectional_iterator&	operator--() {
+					_pointer--;
+					return (*this);
+				}
+				bidirectional_iterator	operator--(int) {
+					bidirectional_iterator temp(*this);
+					_pointer--;
+					return (temp);
+				}
+	};
+
+	// OUT OF CLASS COMPARISON
+	template <class Iterator1, class Iterator2>
+	bool operator== (const ft::bidirectional_iterator<Iterator1>& lhs,	
+				const ft::bidirectional_iterator<Iterator2>& rhs) {
+		return (lhs.base() == rhs.base());
+	}
+	template <class Iterator1, class Iterator2>
+	bool operator!= (const ft::bidirectional_iterator<Iterator1>& lhs,
+					const ft::bidirectional_iterator<Iterator2>& rhs) {
+		return (lhs.base() != rhs.base());
+	}
+
 	// =================================
 	// ======= REVERSE_ITERATOR ========
 	// =================================

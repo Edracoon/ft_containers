@@ -3,8 +3,8 @@
 
 # include <iostream>
 # include <memory>
-# include "../iterator/iterator.hpp"
-# include "../vector/vector.hpp"
+# include "iterator.hpp"
+# include "vector.hpp"
 
 namespace ft
 {
