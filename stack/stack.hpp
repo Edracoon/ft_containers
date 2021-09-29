@@ -22,7 +22,7 @@ namespace ft
 				container_type		C;
 
 		public:
-				explicit stack (const container_type & ctnr = container_type()) { C = ctnr; }
+				explicit stack (const container_type & ctnr = container_type()) : C(ctnr) {  }
 
 				// Utilisation du container sous-jacent pour toutes les fonctions
 				bool empty() const {

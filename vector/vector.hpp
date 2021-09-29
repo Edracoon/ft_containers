@@ -89,11 +89,11 @@ namespace ft
 				// ================
 				// COPY CONSTRUCTOR
 				// ================
-				vector (const vector& x) : _allocator(x._allocator)			
+				vector (const vector& x) : _allocator(x._allocator)
 				{
-					_startpointer		= _allocator.allocate(x.size());
-					_endpointer			= _startpointer + x.size();
-					_capacity			= x.size();
+					_startpointer		= NULL; //_allocator.allocate(x.size());
+					_endpointer			= NULL; //_startpointer + x.size();
+					_capacity			= 0; x.size();
 					*this = x;	// assign
 				}
 
