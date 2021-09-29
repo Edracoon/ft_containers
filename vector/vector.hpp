@@ -231,8 +231,6 @@ namespace ft
 				// ===============
 				void reserve (size_type n)
 				{
-					// if (n > max_size())
-					// 	return ;
 					if (n <= this->capacity())
 						return ;
 					pointer	oldstart			= this->_startpointer;
@@ -350,10 +348,8 @@ namespace ft
 						_startpointer++;
 						vector_temp._endpointer++;
 					}
-					// _allocator.deallocate(save_start, _capacity);
 					_startpointer = save_start;
 					this->swap(vector_temp);
-					// vector_temp._allocator.deallocate(vector_temp._startpointer, vector_temp._capacity);
 					return (_startpointer + conserv);
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
@@ -400,7 +396,6 @@ namespace ft
 						_startpointer++;
 						vector_temp._endpointer++;
 					}
-					// _allocator.deallocate(save_start, _capacity);
 					_startpointer = save_start;	// on redonne le bon start
 					this->swap(vector_temp);	// swap
 				}
@@ -411,7 +406,6 @@ namespace ft
 					size_type	dist	= std::distance(first, last);
 					if (size() == 0)
 						reserve(dist);
-					if (_capacity)
 					if (_startpointer == NULL)
 						reserve(dist);
 					if (_startpointer != NULL && _capacity < size() + dist)
@@ -448,7 +442,6 @@ namespace ft
 						_startpointer++;
 						vector_temp._endpointer++;
 					}
-					// _allocator.deallocate(save_start, _capacity);
 					_startpointer = save_start;
 					this->swap(vector_temp);
 				}
