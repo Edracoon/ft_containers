@@ -169,11 +169,11 @@ namespace ft
 				typedef iterator_traits<T> it;
 		public:
 				// typedef macro
-				typedef typename it::value_type				value_type;
-				typedef typename it::pointer				pointer;
-				typedef typename it::reference				reference;
-				typedef typename it::difference_type		difference_type;
-				typedef typename it::iterator_category		iterator_category;
+				typedef typename it::value_type							value_type;
+				typedef typename it::pointer							pointer;
+				typedef typename it::reference							reference;
+				typedef typename it::difference_type					difference_type;
+				typedef typename std::bidirectional_iterator_tag		iterator_category;
 		protected:
 				pointer	_pointer;
 		public:

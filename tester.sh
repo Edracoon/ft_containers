@@ -2,25 +2,25 @@
 
 args=("$@")
 
-if [[ (${args[0]} = "vector") && (${args[1]} = "all") ]]
+if [[ (${args[0]}) && (${args[1]} = "all") ]]
 then
-	make fclean -C ./vector
-	make TESTER=${args[1]} -C ./vector
-	./vector/FT_${args[1]}.exe > ft.log
-	./vector/STL_${args[1]}.exe > stl.log
+	make fclean -C ./${args[0]}_tests
+	make TESTER=${args[1]} -C ./${args[0]}_tests
+	./${args[0]}_tests/FT_${args[1]}.exe > ft.log
+	./${args[0]}_tests/STL_${args[1]}.exe > stl.log
 	diff ft.log stl.log > diff_all.log
 	cat diff_all.log
 	rm -f */*.exe
 	rm -f */*/*.o
 
-elif [ ${args[0]} = "vector" ]
+elif [ ${args[0]} ]
 then
-	make fclean -C ./vector
-	make TESTER=${args[1]} -C ./vector
-	echo -e "========== FT_"${args[1]}" =========="
-	./vector/FT_${args[1]}.exe
+	make fclean -C ./${args[0]}_tests
+	make TESTER=${args[1]} -C ./${args[0]}_tests
+	echo -e "========== FT_"${args[1]}" ==========="
+	./${args[0]}_tests/FT_${args[1]}.exe
 	echo -e "========== STL_"${args[1]}" =========="
-	./vector/STL_${args[1]}.exe 
+	./${args[0]}_tests/STL_${args[1]}.exe 
 	rm -f *.log
 	rm -f */*/*.o
 	rm -f */*.exe
