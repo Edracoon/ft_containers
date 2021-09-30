@@ -62,11 +62,11 @@ namespace ft
 				typedef	typename allocator_type::difference_type	difference_type;
 
 				// BIDIRECTIONAL ITERATOR
-				typedef	bidirectional_iterator<pointer>				iterator;
-				typedef	bidirectional_iterator<const_pointer>		const_iterator;
+				typedef	ft::bidirectional_iterator<pointer>				iterator;
+				typedef	ft::bidirectional_iterator<const_pointer>		const_iterator;
 
-				typedef	reverse_iterator<iterator>					reverse_iterator;
-				typedef	reverse_iterator<const_iterator>			const_reverse_iterator;
+				typedef	ft::reverse_iterator<iterator>					reverse_iterator;
+				typedef	ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 	};
 }
 
