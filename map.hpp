@@ -90,9 +90,12 @@ namespace ft
 				};
 
 		protected:
+				typedef	btree<mapped_type, key_compare, allocator_type>		btree_type;
 				allocator_type	_alloc;
 				size_type		_capacity;
 				key_compare		_comp;
+				btree_type		_tree;
+				
 		
 		public:
 				// =============
@@ -102,6 +105,7 @@ namespace ft
 				{
 					_alloc			= alloc;
 					_comp			= comp;
+					_tree			= btree_type(comp, alloc);
 				}
 				
 				// =============
@@ -115,6 +119,7 @@ namespace ft
 					(void)last;
 					_comp			= comp;
 					_alloc			= alloc;
+					_tree			= btree_type(comp, alloc);
 				}
 
 				// ============

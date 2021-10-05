@@ -9,6 +9,19 @@ typedef struct s_node
 		int				item;
 } t_node;
 
+void	btree_display(t_node *root, int space)
+{
+	int	i = 5;
+
+	if (root == NULL)
+		return ;
+	space += 5;
+	btree_display(root->right, space);
+	while (i++ < space)
+		printf(" ");
+	printf("%d\n", root->item);
+	btree_display(root->left, space);
+}
 
 t_node *btree_create_node(int	item)
 {
@@ -39,7 +52,7 @@ void btree_apply_infix(t_node *root, void (*applyf)(t_node *))
 	btree_apply_infix(root->right, applyf);
 }
 
-void btree_apply_suffix(t_node *root, void (*applyf)(t_node *))
+void	btree_apply_suffix(t_node *root, void (*applyf)(t_node *))
 {
 	if (root == NULL)
 		return ;
@@ -48,82 +61,70 @@ void btree_apply_suffix(t_node *root, void (*applyf)(t_node *))
 	applyf(root);
 }
 
-void    btree_display(t_node *root, int space) {
-    int    i = 5;
-
-	if (root == NULL)
+void btree_insert_data(t_node **root, int item)
+{
+	if (*root == NULL)
+	{
+		(*root) = btree_create_node(item);
 		return ;
-	space += 5;
-	btree_display(root->right, space);
-	while (i++ < space)
-		printf(" ");
-	printf("%d\n", root->item);
-	btree_display(root->left, space);
+	}
+	if (item < (*root)->item) // std::less<key>
+		btree_insert_data(&((*root)->left), item);
+	else
+		btree_insert_data(&((*root)->right), item);
 }
 
-void	print_content(t_node *root)
+void *btree_search_item(t_node *root, int data_ref)
 {
-	std::cout << root->item << " ";
+	void *	ret;
+	if (root == NULL)
+		return (NULL);
+
+	ret = btree_search_item(root->left, data_ref);
+	if (ret == NULL && data_ref == root->item)	// std::less<key>
+		return (root);
+	if (ret == NULL)
+		ret = btree_search_item(root->right, data_ref);
+	return (ret);
+}
+
+// delete => trouver la valeur a delete puis aller dans le subtree de gauche et chercher la plus grande valeure
+// 			puis la mettre a la place de la node deleted
+
+
+int btree_level_count(t_node *root)
+{
+	int	retleft;
+	int	retright;
+
+	if (root == NULL)
+		return (0);
+
+	retleft = btree_level_count(root->left);
+	retright = btree_level_count(root->right);
+
+	return ( (retleft > retright ? retleft : retright) + 1 );
 }
 
 int	main(void)
 {
-	t_node	*root;
+	t_node	*root = NULL;
 
-	root = btree_create_node(1);
+	btree_insert_data(&root, 10);
+	btree_insert_data(&root, 2);
+	btree_insert_data(&root, 5);
+	btree_insert_data(&root, 1);
+	btree_insert_data(&root, 20);
+	btree_insert_data(&root, 15);
+	btree_insert_data(&root, 25);
 
-	root->left = btree_create_node(2);
-	root->right = btree_create_node(3);
+	t_node *ret = (t_node *)btree_search_item(root, 15);
+	if (ret != NULL)
+		std::cout << "btree_search_item(root, 9) = " << ret->item << std::endl;
+	else
+		std::cout << "btree_search_item(root, 9) = " << "NULL" << std::endl;
 
-	root->left->left = btree_create_node(4);
-	root->left->right = btree_create_node(5);
+	std::cout << "btree_level_count(root) = " << btree_level_count(root) << std::endl;
 
-	root->right->right = btree_create_node(6);
-	root->right->left = btree_create_node(7);
-
-	btree_apply_prefix(root, print_content);
-	std::cout << std::endl;
-	btree_apply_infix(root, print_content);
-	std::cout << std::endl;
-	btree_apply_suffix(root, print_content);
-	
-	std::cout << std::endl;
 	btree_display(root, 1);
 }
-
-
-
-// void printLevelOrder(t_node *root)
-// {
-// 	// Base Case
-// 	if (root == NULL)
-// 		return;
- 
-// 	// Create an empty queue for level order traversal
-// 	std::queue<t_node *> q;
-
-// 	// Enqueue Root and initialize height
-// 	q.push(root);
-
-// 	while (q.empty() == false)
-// 	{
-// 		// nodeCount (queue size) indicates number
-// 		// of nodes at current level.
-// 		int nodeCount = q.size();
-
-// 		// Dequeue all nodes of current level and
-// 		// Enqueue all nodes of next level
-// 		while (nodeCount > 0)
-// 		{
-// 			t_node *node = q.front();
-// 			std::cout << node->item << " ";
-// 			q.pop();
-// 			if (node->left != NULL)
-// 				q.push(node->left);
-// 			if (node->right != NULL)
-// 				q.push(node->right);
-// 			nodeCount--;
-// 		}
-// 		std::cout << std::endl;
-// 	}
-// }
