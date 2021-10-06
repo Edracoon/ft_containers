@@ -19,7 +19,7 @@ namespace ft
 		first_type		first;
 		second_type		second;
 		
-		pair( void ) : first(first_type()), second(second_type()) { }
+		pair( void ) : first(), second() { }
 
 		template<class U, class V>
 		pair ( const pair< U, V > & pr ) : first(pr.first), second(pr.second) { }
@@ -28,14 +28,17 @@ namespace ft
 
 		pair& operator= (const pair& pr)
 		{
-			if (this != &pr)
-			{
-				first = pr.first;
-				second = pr.second;
-			}
+			first = pr.first;
+			second = pr.second;
 			return (*this);
 		}
 	};
+
+	template <class T1,class T2>
+	pair<T1,T2> make_pair (T1 x, T2 y)
+	{
+		return ( pair<T1,T2>(x,y) );
+	}
 
 
 	// =============
@@ -52,7 +55,7 @@ namespace ft
 				typedef Alloc											allocator_type;
 
 				typedef size_t											size_type;
-				typedef pair<const key_type, mapped_type>				value_type;			// la value deviens une clé et une valeur associé dans une node
+				typedef ft::pair<const key_type, mapped_type>			value_type;			// la value deviens une clé et une valeur associé dans une node
 
 				// ALLOCATOR
 				typedef typename allocator_type::reference				reference;			// value_type &
@@ -61,13 +64,16 @@ namespace ft
 				typedef typename allocator_type::const_pointer			const_pointer;		// value_type * const
 				typedef	typename allocator_type::difference_type		difference_type;	// usually ptrdiff_t
 
+		protected:
+				typedef	btree<value_type, key_compare, allocator_type>		btree_type;
+		public:
 				// BIDIRECTIONAL ITERATOR
-				typedef	ft::bidirectional_iterator<pointer>				iterator;
-				typedef	ft::bidirectional_iterator<const_pointer>		const_iterator;
+				typedef	typename btree_type::iterator							iterator;
+				typedef	typename btree_type::const_iterator						const_iterator;
 				typedef	ft::reverse_iterator<iterator>					reverse_iterator;
 				typedef	ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
-		public: 
+		public:
 				// Nested class VALUE_COMPARE
 				class value_compare : std::binary_function< value_type, value_type, bool >	// Herite de binary_function
 				{
@@ -90,7 +96,6 @@ namespace ft
 				};
 
 		protected:
-				typedef	btree<ft::pair<key_type, mapped_type>(), key_compare, allocator_type>		btree_type;
 				allocator_type	_alloc;
 				size_type		_capacity;
 				key_compare		_comp;
@@ -131,11 +136,32 @@ namespace ft
 
 				~map() {}
 
-
+				iterator begin() {
+					return _tree.begin();
+				}
+				const_iterator begin() const {
+					return _tree.begin();
+				}
+				iterator end() {
+					return _tree.end();
+				}
+				const_iterator end() const {
+					return _tree.end();
+				}
+				/*pair<iterator,bool>*/void insert (const value_type& val)
+				{
+					_tree.btree_insert(&(_tree.root), val);
+				}
 
 				map& operator= (const map& x)
 				{
 					(void)x;
+				}
+	
+				// PENSER A SUPPRIMER
+				void	print_tree(void)
+				{
+					_tree.btree_display(_tree.root, 0);
 				}
 	};
 }

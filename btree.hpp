@@ -4,11 +4,15 @@
 
 namespace ft {
 
-template <class T>
+template <class T/*, class Alloc*/>
 class	node
 {
 	public:
-			T				value; // pair
+			typedef	T			pair;
+
+			node(const pair& Value/*, Alloc alloc*/) : value(Value), right(NULL/*alloc.allocate(1)*/), left(NULL/*alloc.allocate(1)*/) { }
+
+			pair			value; // pair
 			node*			right;
 			node*			left;
 };
@@ -17,11 +21,17 @@ template <class Pair, class Compare, class Alloc>
 class btree
 {
 	public:
-			typedef Pair											pair;
-			typedef Compare											value_compare;
-			typedef	node<pair>										node;
-			typedef typename Alloc::template rebind< node >::other	allocator_type;
-	protected:
+			typedef Pair												pair;
+			typedef Compare												value_compare;
+			
+			typedef	node<pair /*, typename Alloc::template rebind< node >::other*/ >	node;
+			typedef typename Alloc::template rebind< node >::other		allocator_type;
+			
+			typedef	ft::bidirectional_iterator<node>					iterator;
+			typedef	ft::bidirectional_iterator<const node>				const_iterator;
+			typedef	ft::reverse_iterator<iterator>						reverse_iterator;
+			typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+	public:
 			Compare						_comp;
 			allocator_type				_alloc;
 			node*						root;
@@ -33,23 +43,31 @@ class btree
 				root			= NULL;
 			}
 
-			node *btree_create_node(pair	value)
-			{
-				node	*temp = _alloc.allocate(1);
+			iterator	begin() {
+				node *temp = root;
+				while (temp->left != NULL)
+				{
+					temp = temp->left;
+				}
+				return (iterator(temp));
+			}
 
-				temp->left		= NULL;
-				temp->right		= NULL;
-				temp->value		= value;
-				
-				return (temp);
+			iterator	end() {
+				node *temp = root;
+				while (temp != NULL)
+				{
+					temp = temp->right;
+				}
+				return (iterator(temp));
 			}
 
 			// === INSERT === //
-			void btree_insert(node **root, pair value)
+			void btree_insert(node **root, const pair& value)
 			{
 				if (*root == NULL)
 				{
-					(*root) = btree_create_node(value);
+					*root = _alloc.allocate(1);
+					_alloc.construct(*root, value);
 					return ;
 				}
 				if (_comp(value.first, (*root)->value.first))
@@ -89,6 +107,20 @@ class btree
 				retright = btree_level_count(root->right);
 
 				return ( (_comp(retleft, retright) == false ? retleft : retright) + 1 );
+			}
+
+			void	btree_display(node *root, int space)
+			{
+				int	i = 5;
+
+				if (root == NULL)
+					return ;
+				space += 5;
+				btree_display(root->right, space);
+				while (i++ < space)
+					printf(" ");
+				printf("[%s - %d]\n", root->value.first.c_str(), root->value.second);
+				btree_display(root->left, space);
 			}
 };
 
