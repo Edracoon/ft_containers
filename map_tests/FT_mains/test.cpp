@@ -3,7 +3,7 @@
 
 int	main(void)
 {
-	ft::map<std::string, unsigned int>	map_test;
+	ft::map<std::string,  int>	map_test;
 
 	(void)map_test;
 

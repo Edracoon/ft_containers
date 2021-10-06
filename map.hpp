@@ -90,22 +90,20 @@ namespace ft
 				};
 
 		protected:
-				typedef	btree<mapped_type, key_compare, allocator_type>		btree_type;
+				typedef	btree<ft::pair<key_type, mapped_type>(), key_compare, allocator_type>		btree_type;
 				allocator_type	_alloc;
 				size_type		_capacity;
 				key_compare		_comp;
 				btree_type		_tree;
-				
 		
 		public:
 				// =============
 				// == DEFAULT ==
 				// =============
-				explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+				explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(btree_type(comp))
 				{
 					_alloc			= alloc;
 					_comp			= comp;
-					_tree			= btree_type(comp, alloc);
 				}
 				
 				// =============

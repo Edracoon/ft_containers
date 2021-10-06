@@ -117,6 +117,7 @@ int	main(void)
 	btree_insert_data(&root, 20);
 	btree_insert_data(&root, 15);
 	btree_insert_data(&root, 25);
+	
 
 	t_node *ret = (t_node *)btree_search_item(root, 15);
 	if (ret != NULL)
