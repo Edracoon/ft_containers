@@ -187,7 +187,7 @@ namespace ft
 				// recup le pointer de l'iterator (conversion plus simple que &(*(iterator)))
 				pointer base(void) const
 				{
-					return &(this->_pointer->value);
+					return pointer(&(this->_pointer->value));
 				}
 
 				// assignation

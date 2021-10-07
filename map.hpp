@@ -136,6 +136,9 @@ namespace ft
 
 				~map() {}
 
+				// ===================
+				// === BEGIN | END ===
+				// ===================
 				iterator begin() {
 					return _tree.begin();
 				}
@@ -148,9 +151,20 @@ namespace ft
 				const_iterator end() const {
 					return _tree.end();
 				}
+
+				// =============
+				// === EMPTY ===
+				// =============
+				bool empty() const {
+
+				}
+
+				// ==============
+				// === INSERT ===
+				// ==============
 				/*pair<iterator,bool>*/void insert (const value_type& val)
 				{
-					_tree.btree_insert(&(_tree.root), val);
+					_tree.btree_insert(&(_tree._root), val);
 				}
 
 				map& operator= (const map& x)
@@ -161,7 +175,7 @@ namespace ft
 				// PENSER A SUPPRIMER
 				void	print_tree(void)
 				{
-					_tree.btree_display(_tree.root, 0);
+					_tree.btree_display(_tree._root, 0);
 				}
 	};
 }

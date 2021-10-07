@@ -4,15 +4,16 @@
 
 namespace ft {
 
-template <class T/*, class Alloc*/>
+template <class T>
 class	node
 {
 	public:
 			typedef	T			pair;
 
-			node(const pair& Value/*, Alloc alloc*/) : value(Value), right(NULL/*alloc.allocate(1)*/), left(NULL/*alloc.allocate(1)*/) { }
+			node(const pair& Value) : value(Value), parent(NULL), right(NULL), left(NULL) { }
 
 			pair			value; // pair
+			node*			parent;
 			node*			right;
 			node*			left;
 };
@@ -24,7 +25,7 @@ class btree
 			typedef Pair												pair;
 			typedef Compare												value_compare;
 			
-			typedef	node<pair /*, typename Alloc::template rebind< node >::other*/ >	node;
+			typedef	node<pair>											node;
 			typedef typename Alloc::template rebind< node >::other		allocator_type;
 			
 			typedef	ft::bidirectional_iterator<node>					iterator;
@@ -34,17 +35,17 @@ class btree
 	public:
 			Compare						_comp;
 			allocator_type				_alloc;
-			node*						root;
+			node*						_root;
 	public:
 
 			// === CONSTRUCTOR === //
 			btree(Compare	comp) : _comp(comp), _alloc(allocator_type())
 			{
-				root			= NULL;
+				_root			= NULL;
 			}
 
 			iterator	begin() {
-				node *temp = root;
+				node *temp = _root;
 				while (temp->left != NULL)
 				{
 					temp = temp->left;
@@ -53,7 +54,7 @@ class btree
 			}
 
 			iterator	end() {
-				node *temp = root;
+				node *temp = _root;
 				while (temp != NULL)
 				{
 					temp = temp->right;
@@ -62,18 +63,45 @@ class btree
 			}
 
 			// === INSERT === //
-			void btree_insert(node **root, const pair& value)
+			iterator btree_insert(node **root, const pair& value)
 			{
 				if (*root == NULL)
 				{
+
 					*root = _alloc.allocate(1);
 					_alloc.construct(*root, value);
-					return ;
+					return iterator(*root);
 				}
-				if (_comp(value.first, (*root)->value.first))
-					btree_insert(&((*root)->left), value);
-				else
-					btree_insert(&((*root)->right), value);
+				while ((*root) != NULL)
+				{
+					// la condition du if pour trouver une valeur egale marche pas
+					// if (!(_comp((*root)->value.first, value.first) && !(_comp(value.first, (*root)->value.first))))
+					// {
+					// 	std::cout << "here0" << std::endl;
+					// 	return (iterator(*root));
+					// }
+					// left insert
+					if ((*root)->left == NULL && !(_comp((*root)->value.first, value.first)))
+					{
+						(*root)->left = _alloc.allocate(1);
+						_alloc.construct((*root)->left, value);
+						(*root)->left->parent = *root;
+						return iterator((*root)->left);
+					}
+					// right insert
+					if ((*root)->right == NULL && (_comp((*root)->value.first, value.first)))
+					{
+						(*root)->right = _alloc.allocate(1);
+						_alloc.construct((*root)->right, value);
+						(*root)->right->parent = *root;
+						return iterator((*root)->right);
+					}
+					if (_comp((*root)->value.first, value.first))
+						root = &((*root)->right);
+					else
+						root = &((*root)->left);
+				}
+				return iterator(NULL);
 			}
 
 			// === FIND === //
