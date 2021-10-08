@@ -42,6 +42,12 @@ class btree
 			// === CONSTRUCTOR === //
 			btree( void ) : _comp(Compare()), _alloc(allocator_type()), _root(NULL) { }
 			btree(Compare	comp) : _comp(comp), _alloc(allocator_type()), _root(NULL) { }
+			template <class InputIterator>
+			btree(InputIterator first, InputIterator last, Compare comp, allocator_type alloc) : _comp(comp), _alloc(alloc), _root(NULL)
+			{
+				for ( ; first != last ; first++)
+					btree_insert(&_root, *first);
+			}
 
 	private:
 			node*	_get_last() const {
@@ -60,8 +66,7 @@ class btree
 				node *temp = _root;
 				while (temp->left != NULL)
 					temp = temp->left;
-				_last = NULL;
-				return (iterator(temp, _last));
+				return (iterator(temp, NULL));
 			}
 			const_iterator	begin() const {
 				node *temp = _root;

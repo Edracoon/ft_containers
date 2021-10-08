@@ -87,11 +87,9 @@ namespace ft
 				map (InputIterator first, InputIterator last,
 					const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 				{
-					(void)first;
-					(void)last;
 					_comp			= comp;
 					_alloc			= alloc;
-					_tree			= btree_type(comp);
+					_tree			= btree_type(first, last, comp, alloc);
 				}
 
 				// ============
@@ -99,8 +97,9 @@ namespace ft
 				// ============
 				map (const map& x)
 				{
-					_alloc = x._alloc;
-					*this = x;
+					_alloc	= x._alloc;
+					_comp	= x._comp;
+					*this	= x;
 				}
 
 				~map() {}
@@ -147,14 +146,27 @@ namespace ft
 				// ==============
 				// === INSERT ===
 				// ==============
-				/*pair<iterator,bool>*/void insert (const value_type& val)
-				{
+				/*pair<iterator,bool>*/void insert (const value_type& val) {
+					bool	insertable	= // _tree.
 					_tree.btree_insert(&(_tree._root), val);
+				}
+
+				iterator insert (iterator position, const value_type& val) {
+					// this->insert(val);
+					// return ()
+				}
+
+				template <class InputIterator>
+				void insert (InputIterator first, InputIterator last) {
+					for ( ; first != last ; first++) {
+						this->insert(*first);
+					}
 				}
 
 				map& operator= (const map& x)
 				{
-					(void)x;
+					this->clear();
+					this->insert(x.begin(), x.end());
 					return *this;
 				}
 	
