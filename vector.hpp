@@ -33,12 +33,12 @@ namespace ft
 				typedef ft::random_access_iterator<const_pointer>					const_iterator;
 				typedef ft::reverse_iterator<iterator>								reverse_iterator;
 				typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
-				
+
 		protected:
 					pointer			_startpointer;	// first elem
 					pointer			_endpointer;	// last elem + 1
 					allocator_type	_allocator;		// allocateur selon son type pour utiliser ses fonctions
-					size_type		_capacity;		// 
+					size_type		_capacity;		// allocated size
 		public:
 				// ===================
 				// DEFAULT CONSTRUCTOR

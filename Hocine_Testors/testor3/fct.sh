@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-user_includes="../../includes"
+user_includes="../../"
 
 EOC="\e[0m"
 BOLD="\e[1m"
@@ -12,7 +12,7 @@ PURPLE="\e[95m"
 CYAN="\e[96m"
 DGREY="\e[1;90m"
 
-tested_path="../"
+tested_path="../../"
 incl_path="$tested_path"
 srcs="srcs"
 

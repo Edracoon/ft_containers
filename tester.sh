@@ -4,6 +4,8 @@ args=("$@")
 
 if [[ (${args[0]}) && (${args[1]} = "all") ]]
 then
+	rm -f */*.exe
+	rm -f */*/*.o
 	make fclean -C ./${args[0]}_tests
 	make TESTER=${args[1]} -C ./${args[0]}_tests
 	./${args[0]}_tests/FT_${args[1]}.exe > ft.log
@@ -15,6 +17,8 @@ then
 
 elif [ ${args[0]} ]
 then
+	rm -f */*.exe
+	rm -f */*/*.o
 	make fclean -C ./${args[0]}_tests
 	make TESTER=${args[1]} -C ./${args[0]}_tests
 	echo -e "========== FT_"${args[1]}" ==========="

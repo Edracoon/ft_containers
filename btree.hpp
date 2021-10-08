@@ -29,37 +29,63 @@ class btree
 			typedef typename Alloc::template rebind< node >::other		allocator_type;
 			
 			typedef	ft::bidirectional_iterator<node>					iterator;
-			typedef	ft::bidirectional_iterator<const node>				const_iterator;
+			typedef	ft::const_bidirectional_iterator<const node>		const_iterator;
 			typedef	ft::reverse_iterator<iterator>						reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 	public:
 			Compare						_comp;
 			allocator_type				_alloc;
 			node*						_root;
+			node*						_last;
 	public:
 
 			// === CONSTRUCTOR === //
-			btree(Compare	comp) : _comp(comp), _alloc(allocator_type())
-			{
-				_root			= NULL;
+			btree( void ) : _comp(Compare()), _alloc(allocator_type()), _root(NULL) { }
+			btree(Compare	comp) : _comp(comp), _alloc(allocator_type()), _root(NULL) { }
+
+	private:
+			node*	_get_last() const {
+				node	*temp = _root;
+				node	*last;
+				while (temp != NULL)
+				{
+					last	= temp;
+					temp	= temp->right;
+				}
+				return (last);
 			}
 
+	public:
 			iterator	begin() {
 				node *temp = _root;
 				while (temp->left != NULL)
-				{
 					temp = temp->left;
-				}
-				return (iterator(temp));
+				_last = NULL;
+				return (iterator(temp, _last));
+			}
+			const_iterator	begin() const {
+				node *temp = _root;
+				while (temp->left != NULL)
+					temp = temp->left;
+				return (const_iterator(temp, _get_last()));
 			}
 
 			iterator	end() {
 				node *temp = _root;
 				while (temp != NULL)
 				{
-					temp = temp->right;
+					_last	= temp;
+					temp	= temp->right;
 				}
-				return (iterator(temp));
+				return (iterator(temp, _last));
+			}
+			const_iterator	end() const {
+				node *temp = _root;
+				while (temp != NULL)
+				{
+					temp	= temp->right;
+				}
+				return (const_iterator(temp, _get_last()));
 			}
 
 			// === INSERT === //
@@ -67,26 +93,23 @@ class btree
 			{
 				if (*root == NULL)
 				{
-
 					*root = _alloc.allocate(1);
 					_alloc.construct(*root, value);
-					return iterator(*root);
+					(*root)->parent = NULL;
+					return iterator(*root, NULL);
 				}
 				while ((*root) != NULL)
 				{
-					// la condition du if pour trouver une valeur egale marche pas
-					// if (!(_comp((*root)->value.first, value.first) && !(_comp(value.first, (*root)->value.first))))
-					// {
-					// 	std::cout << "here0" << std::endl;
-					// 	return (iterator(*root));
-					// }
+					// si les key sont egales, ne pas insert
+					if (!_comp((*root)->value.first, value.first) && !_comp(value.first, (*root)->value.first))
+						return (iterator(*root, NULL));
 					// left insert
 					if ((*root)->left == NULL && !(_comp((*root)->value.first, value.first)))
 					{
 						(*root)->left = _alloc.allocate(1);
 						_alloc.construct((*root)->left, value);
 						(*root)->left->parent = *root;
-						return iterator((*root)->left);
+						return iterator((*root)->left, NULL);
 					}
 					// right insert
 					if ((*root)->right == NULL && (_comp((*root)->value.first, value.first)))
@@ -94,14 +117,38 @@ class btree
 						(*root)->right = _alloc.allocate(1);
 						_alloc.construct((*root)->right, value);
 						(*root)->right->parent = *root;
-						return iterator((*root)->right);
+						return iterator((*root)->right, NULL);
 					}
 					if (_comp((*root)->value.first, value.first))
 						root = &((*root)->right);
-					else
+					else if (!_comp((*root)->value.first, value.first))
 						root = &((*root)->left);
 				}
-				return iterator(NULL);
+				return iterator(NULL, NULL);
+			}
+
+			// === SIZE ===
+			int	size(node *root) const
+			{
+				if (root == NULL)
+					return (0);
+				return (size((root->left)) + 1 + size((root->right)));
+			}
+
+			// === CLEAR === //
+			void	btree_clear(node *root)
+			{
+				if (root->left == NULL && root->right == NULL)
+				{
+					_alloc.destroy(root);
+					_alloc.deallocate(root, 1);
+					root = NULL;
+					return ;
+				}
+				if (root->left)
+					btree_clear((root->left));
+				if (root->right)
+					btree_clear((root->right));
 			}
 
 			// === FIND === //
