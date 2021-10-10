@@ -25,5 +25,10 @@ int	main(void)
 		--ite;
 		std::cout << "ite = [" << ite->first << " - " << ite->second << "]" << std::endl;
 	}
+	std::cout << "map.clear()" << std::endl;
+	map_test.clear();
+	std::cout << "map.empty() -> " << map_test.empty() << std::endl;
+	std::cout << "print_tree()" << std::endl;
+	map_test.print_tree();
 	return (0);
 }

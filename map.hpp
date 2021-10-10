@@ -125,13 +125,16 @@ namespace ft
 				// === CLEAR ===
 				// =============
 				void clear() {
-					_tree.btree_clear((_tree._root));
+					if (this->empty() == false)
+					{
+						_tree.btree_clear(_tree._root);
+						_tree._root = NULL;
+					}
 				}
 
-
-				// =============
-				// === EMPTY ===
-				// =============
+				// ============
+				// === SIZE ===
+				// ============
 				size_type size() const {
 					return (_tree.size((_tree._root)));
 				}
@@ -146,20 +149,23 @@ namespace ft
 				// ==============
 				// === INSERT ===
 				// ==============
-				/*pair<iterator,bool>*/void insert (const value_type& val) {
-					bool	insertable	= // _tree.
-					_tree.btree_insert(&(_tree._root), val);
+				pair<iterator,bool> insert (const value_type& val) {
+					bool		insertable	= _tree.btree_find(_tree._root, val) == NULL ? true : false;
+					iterator	it;
+					// std::cout << "insertable = " << insertable << std::endl;
+					it = _tree.btree_insert(&(_tree._root), val);
+					return ft::make_pair(it, insertable);
 				}
 
 				iterator insert (iterator position, const value_type& val) {
-					// this->insert(val);
-					// return ()
+					this->insert(val);
+					return (position);
 				}
 
 				template <class InputIterator>
 				void insert (InputIterator first, InputIterator last) {
 					for ( ; first != last ; first++) {
-						this->insert(*first);
+						this->_tree.btree_insert(&(_tree._root), *first.base());
 					}
 				}
 

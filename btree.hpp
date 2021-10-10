@@ -52,7 +52,7 @@ class btree
 	private:
 			node*	_get_last() const {
 				node	*temp = _root;
-				node	*last;
+				node	*last = NULL;
 				while (temp != NULL)
 				{
 					last	= temp;
@@ -64,19 +64,27 @@ class btree
 	public:
 			iterator	begin() {
 				node *temp = _root;
-				while (temp->left != NULL)
-					temp = temp->left;
+				// std::cout << "bebug: BEGIN non const" << std::endl;
+				if (_root) {
+					while (temp->left != NULL)
+						temp = temp->left;
+				}
 				return (iterator(temp, NULL));
 			}
 			const_iterator	begin() const {
 				node *temp = _root;
-				while (temp->left != NULL)
-					temp = temp->left;
+				// std::cout << "bebug: BEGIN const" << std::endl;
+				if (_root) {
+					while (temp->left != NULL)
+						temp = temp->left;
+				}
 				return (const_iterator(temp, _get_last()));
 			}
 
 			iterator	end() {
 				node *temp = _root;
+				_last = NULL;
+				// std::cout << "bebug: END non const" << std::endl;
 				while (temp != NULL)
 				{
 					_last	= temp;
@@ -86,10 +94,9 @@ class btree
 			}
 			const_iterator	end() const {
 				node *temp = _root;
+				// std::cout << "bebug: BEGIN const" << std::endl;
 				while (temp != NULL)
-				{
 					temp	= temp->right;
-				}
 				return (const_iterator(temp, _get_last()));
 			}
 
@@ -143,29 +150,29 @@ class btree
 			// === CLEAR === //
 			void	btree_clear(node *root)
 			{
+				if (root == NULL)
+					return ;
+
+				btree_clear((root->left));
+				btree_clear((root->right));
 				if (root->left == NULL && root->right == NULL)
 				{
 					_alloc.destroy(root);
-					_alloc.deallocate(root, 1);
+					// _alloc.deallocate(root, 1);
 					root = NULL;
-					return ;
 				}
-				if (root->left)
-					btree_clear((root->left));
-				if (root->right)
-					btree_clear((root->right));
 			}
 
 			// === FIND === //
-			pair & btree_find(node *root, pair data_ref)
+			pair* btree_find(node *root, pair data_ref)
 			{
-				pair	ret;
+				pair*	ret;
 				if (root == NULL)
 					return (NULL);
 
 				ret = btree_find(root->left, data_ref);
-				if (ret == NULL && !(_comp(data_ref.first, root->value.first)) && !(root->value.first, _comp(data_ref.first)))	// std::less<key>
-					return (root->value);
+				if (ret == NULL && !_comp(data_ref.first, root->value.first) && !_comp(root->value.first, data_ref.first))	// std::less<key>
+					return &(root->value);
 				if (ret == NULL)
 					ret = btree_find(root->right, data_ref);
 				return (ret);
