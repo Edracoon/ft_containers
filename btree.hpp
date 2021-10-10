@@ -164,17 +164,31 @@ class btree
 			}
 
 			// === FIND === //
-			pair* btree_find(node *root, pair data_ref)
+			pair* btree_find_pair(node *root, pair data_ref) const
 			{
 				pair*	ret;
 				if (root == NULL)
 					return (NULL);
 
-				ret = btree_find(root->left, data_ref);
+				ret = btree_find_pair(root->left, data_ref);
 				if (ret == NULL && !_comp(data_ref.first, root->value.first) && !_comp(root->value.first, data_ref.first))	// std::less<key>
 					return &(root->value);
 				if (ret == NULL)
-					ret = btree_find(root->right, data_ref);
+					ret = btree_find_pair(root->right, data_ref);
+				return (ret);
+			}
+			
+			node* btree_find_node(node *root, pair data_ref) const
+			{
+				node*	ret;
+				if (root == NULL)
+					return (NULL);
+
+				ret = btree_find_node(root->left, data_ref);
+				if (ret == NULL && !_comp(data_ref.first, root->value.first) && !_comp(root->value.first, data_ref.first))	// std::less<key>
+					return (root);
+				if (ret == NULL)
+					ret = btree_find_node(root->right, data_ref);
 				return (ret);
 			}
 
@@ -206,7 +220,7 @@ class btree
 				btree_display(root->right, space);
 				while (i++ < space)
 					printf(" ");
-				printf("[%s - %d]\n", root->value.first.c_str(), root->value.second);
+				std::cout << root->value.first << " - " <<  root->value.second << std::endl;
 				btree_display(root->left, space);
 			}
 };

@@ -17,6 +17,7 @@ int		main(void)
 	TESTED_NAMESPACE::map<T1, T2>::const_iterator ite(mp.begin());
 	printSize(mp);
 
+	// mp.print_tree();
 	printPair(++ite);
 	printPair(ite++);
 	printPair(ite++);

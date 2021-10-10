@@ -146,27 +146,53 @@ namespace ft
 					return (!_tree.size((_tree._root)));
 				}
 
+				// ============
+				// === FIND ===
+				// ============
+				iterator find (const key_type& k) {
+					return iterator(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")));
+				}
+				const_iterator find (const key_type& k) const {
+					return const_iterator(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")));
+				}
+
+				// ============
+				// === COUNT ===
+				// ============
+				size_type count (const key_type& k) const {
+					return (_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")) != NULL ? 1 : 0);
+				}
+
 				// ==============
 				// === INSERT ===
 				// ==============
 				pair<iterator,bool> insert (const value_type& val) {
-					bool		insertable	= _tree.btree_find(_tree._root, val) == NULL ? true : false;
-					iterator	it;
-					// std::cout << "insertable = " << insertable << std::endl;
-					it = _tree.btree_insert(&(_tree._root), val);
+					
+					bool		insertable	= _tree.btree_find_pair(_tree._root, val) == NULL ? true : false;
+					iterator	it = _tree.btree_insert(&(_tree._root), val);
+					
 					return ft::make_pair(it, insertable);
 				}
 
 				iterator insert (iterator position, const value_type& val) {
+					(void)position;
+
 					this->insert(val);
-					return (position);
+					iterator	ret = iterator(_tree.btree_find_node(_tree._root, val));
+					
+					return (ret);
 				}
 
 				template <class InputIterator>
 				void insert (InputIterator first, InputIterator last) {
 					for ( ; first != last ; first++) {
-						this->_tree.btree_insert(&(_tree._root), *first.base());
+						this->_tree.btree_insert(&(_tree._root), *first);
 					}
+				}
+
+				// === OPERATORS === //
+				mapped_type& operator[] (const key_type& k) {
+					return (*((this->insert( ft::make_pair(k, mapped_type()))).first)).second;
 				}
 
 				map& operator= (const map& x)

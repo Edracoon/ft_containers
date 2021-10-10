@@ -208,7 +208,7 @@ namespace ft
 				}
 
 				// *
-				reference operator* () const {
+				pair operator* () const {
 					return (_pointer->value);
 				}
 
@@ -219,8 +219,9 @@ namespace ft
 
 				// ++
 				bidirectional_iterator&	operator++() {
-					if (!_pointer)
-						return *this;
+					// if (!_pointer)
+					// 	return *this;
+					// std::cout << "coucou non const : " << _pointer->value.first << " - " <<  _pointer->value.second << std::endl;
 					if (_pointer->right != NULL)
 					{
 						_pointer = _pointer->right;
@@ -237,6 +238,7 @@ namespace ft
 				bidirectional_iterator	operator++(int) {
 					bidirectional_iterator	temp = *this;
 					operator++();
+					// std::cout << "coucou non const : " << (*temp).first << " - " << (*temp).second << std::endl;
 					return temp;
 				}
 
@@ -295,7 +297,7 @@ namespace ft
 				typedef value_type&									reference;
 				typedef size_t										difference_type;
 				typedef std::bidirectional_iterator_tag				iterator_category;
-				typedef const typename value_type::pair					pair;
+				typedef const typename value_type::pair				pair;
 				typedef	pair*										pair_pointer;
 		protected:
 				pointer	_pointer;
@@ -329,7 +331,7 @@ namespace ft
 				}
 
 				// *
-				reference operator* () const {
+				pair operator* () const {
 					return (_pointer->value);
 				}
 
@@ -342,6 +344,7 @@ namespace ft
 				const_bidirectional_iterator&	operator++() {
 					if (!_pointer)
 						return *this;
+					// std::cout << "coucou const : " << _pointer->value.first << " - " <<  _pointer->value.second << std::endl;
 					if (_pointer->right != NULL)
 					{
 						_pointer = _pointer->right;
@@ -358,6 +361,7 @@ namespace ft
 				const_bidirectional_iterator	operator++(int) {
 					const_bidirectional_iterator	temp = *this;
 					operator++();
+					// std::cout << "coucou const : " << (*temp).first << " - " << (*temp).second << std::endl;
 					return temp;
 				}
 
