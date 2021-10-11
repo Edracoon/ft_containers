@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 16:43:31 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/11 18:53:55 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,15 @@ namespace ft
 				// === SWAP ===
 				void swap (map& x) {
 					
+					ft::map<key_type, mapped_type, key_compare, allocator_type>	temp;
+					
+					temp.insert(this->begin(), this->end());
+					
+					this->clear();
+					this->insert(x.begin(), x.end());
+
+					x.clear();
+					x.insert(temp.begin(), temp.end());
 				}
 
 				// ===================
@@ -151,12 +160,12 @@ namespace ft
 				const_reverse_iterator rend() const {
 					return const_reverse_iterator(_tree.begin());
 				}
-				// ===================
+
 				// === KEY_COMPARE ===
-				// ===================
 				key_compare key_comp() const {
 					return _comp;
 				}
+				// === VALUE_COMP ===
 				value_compare value_comp() const {
 					return value_compare(_comp);
 				}
