@@ -1,3 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/11 11:15:47 by epfennig          #+#    #+#             */
+/*   Updated: 2021/10/11 11:16:22 by epfennig         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef UTILS_HPP
+# define UTILS_HPP
 
 namespace ft
 {
@@ -71,12 +85,6 @@ namespace ft
 		}
 		return ( first2 != last2 );
 	}
-
-	// distance
-	// template<class InputIterator>
-	// typename iterator_traits<InputIterator>::difference_type
-    // distance (InputIterator first, InputIterator last)
-	// {
-	// 	return last - first;
-	// }
 }
+
+#endif
