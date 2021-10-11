@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 11:15:21 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/11 16:43:31 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "iterator.hpp"
 # include "btree.hpp"
 # include "pair.hpp"
+# include "utils.hpp"
 
 namespace ft
 {
@@ -116,6 +117,11 @@ namespace ft
 
 				~map() {}
 
+				// === SWAP ===
+				void swap (map& x) {
+					
+				}
+
 				// ===================
 				// === BEGIN | END ===
 				// ===================
@@ -133,6 +139,28 @@ namespace ft
 					return const_iterator(_tree.end());
 				}
 
+				reverse_iterator rbegin() {
+					return reverse_iterator(_tree.end());
+				}
+				const_reverse_iterator rbegin() const {
+					return const_reverse_iterator(_tree.end());
+				}
+				reverse_iterator rend() {
+					return reverse_iterator(_tree.begin());
+				}
+				const_reverse_iterator rend() const {
+					return const_reverse_iterator(_tree.begin());
+				}
+				// ===================
+				// === KEY_COMPARE ===
+				// ===================
+				key_compare key_comp() const {
+					return _comp;
+				}
+				value_compare value_comp() const {
+					return value_compare(_comp);
+				}
+				
 				// =============
 				// === CLEAR ===
 				// =============
@@ -168,9 +196,9 @@ namespace ft
 					return const_iterator(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")));
 				}
 
-				// ============
+				// =============
 				// === COUNT ===
-				// ============
+				// =============
 				size_type count (const key_type& k) const {
 					return (_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")) != NULL ? 1 : 0);
 				}
@@ -178,7 +206,7 @@ namespace ft
 				// ==============
 				// === INSERT ===
 				// ==============
-				pair<iterator,bool> insert (const value_type& val) {
+				pair<iterator, bool> insert (const value_type& val) {
 					
 					bool		insertable	= _tree.btree_find_pair(_tree._root, val) == NULL ? true : false;
 					iterator	it = _tree.btree_insert(&(_tree._root), val);
@@ -204,7 +232,7 @@ namespace ft
 
 				// === OPERATORS === //
 				mapped_type& operator[] (const key_type& k) {
-					return (*((this->insert( ft::make_pair(k, mapped_type()))).first)).second;
+					return ((this->insert( ft::make_pair(k, mapped_type()) )).first)->second;
 				}
 
 				map& operator= (const map& x)
@@ -220,6 +248,46 @@ namespace ft
 					_tree.btree_display(_tree._root, 0);
 				}
 	};
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs,
+						const ft::map<Key,T,Compare,Alloc>& rhs ) {
+		if (lhs.size() != rhs.size())
+			return (false);
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator!= ( const ft::map<Key,T,Compare,Alloc>& lhs,
+						const ft::map<Key,T,Compare,Alloc>& rhs ) {
+		return !(lhs == rhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator<  ( const ft::map<Key, T, Compare, Alloc>& lhs,
+						const ft::map<Key, T, Compare, Alloc>& rhs ) {
+		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator<= ( const ft::map<Key,T,Compare,Alloc>& lhs,
+						const ft::map<Key,T,Compare,Alloc>& rhs ) {
+		return !(rhs < lhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator>  ( const ft::map<Key,T,Compare,Alloc>& lhs,
+						const ft::map<Key,T,Compare,Alloc>& rhs ) {
+		return (rhs < lhs);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	bool operator>= ( const ft::map<Key,T,Compare,Alloc>& lhs,
+						const ft::map<Key,T,Compare,Alloc>& rhs ){
+		return !(lhs < rhs);
+	}
+
+
 }
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:36 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 11:16:51 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/11 12:02:02 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ namespace ft
 				iterator_type		_base_it;
 		public:
 				reverse_iterator() { _base_it = NULL; }													// default
-				explicit reverse_iterator (iterator_type it) : _base_it(it) { }				// param
+				explicit reverse_iterator (iterator_type it) : _base_it(it) { }							// param
 				template <class Iter>
 				reverse_iterator (const reverse_iterator<Iter>& rev_it) : _base_it(rev_it.base()) { }	// copy
 				~reverse_iterator( void ) {  }

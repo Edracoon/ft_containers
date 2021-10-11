@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 11:15:13 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/11 16:16:07 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ class btree
 			iterator	begin() {
 				node *temp = _root;
 				// std::cout << "bebug: BEGIN non const" << std::endl;
+				// if (_root->left == NULL)
+				// 	return iterator(_root, NULL);
 				if (_root) {
 					while (temp->left != NULL)
 						temp = temp->left;
@@ -87,6 +89,8 @@ class btree
 			const_iterator	begin() const {
 				node *temp = _root;
 				// std::cout << "bebug: BEGIN const" << std::endl;
+				// if (_root->left == NULL)
+				// 	return iterator(_root, _get_last());
 				if (_root) {
 					while (temp->left != NULL)
 						temp = temp->left;
@@ -120,7 +124,9 @@ class btree
 				{
 					*root = _alloc.allocate(1);
 					_alloc.construct(*root, value);
-					(*root)->parent = NULL;
+					(*root)->left		= NULL;
+					(*root)->right		= NULL;
+					(*root)->parent		= NULL;
 					return iterator(*root, NULL);
 				}
 				while ((*root) != NULL)

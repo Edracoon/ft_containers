@@ -17,14 +17,16 @@ int		main(void)
 	TESTED_NAMESPACE::map<T1, T2>::const_iterator ite(mp.begin());
 	printSize(mp);
 
-	// mp.print_tree();
 	printPair(++ite);
 	printPair(ite++);
 	printPair(ite++);
 	printPair(++ite);
 
+	std::cout << "hello1" << std::endl;
 	it->second.m();
+	std::cout << "hello2" << std::endl;
 	ite->second.m();
+	std::cout << "hello3" << std::endl;
 
 	printPair(++it);
 	printPair(it++);
