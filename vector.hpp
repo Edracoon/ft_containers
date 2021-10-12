@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:16:33 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 11:54:19 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/12 11:12:57 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,7 +317,7 @@ namespace ft
 				// ==============
 				iterator insert (iterator position, const value_type& val)					// SINGLE ELEMENT
 				{
-					size_type	conserv = position - _startpointer;
+					size_type	conserv = position - _startpointer;	// stockage de la position dans le cas d'une reallocation
 					if (_startpointer == NULL)
 						this->reserve(1);
 					if (_startpointer != NULL && _capacity < size() + 1)

@@ -16,7 +16,7 @@ namespace ft
 				// recup traits macro
 				// typedef iterator_traits<T> it;
 		public:
-				// typedef macro
+				// typedef macro	// T = PAIR
 				typedef T											value_type;
 				typedef T*											pointer;
 				typedef T&											reference;
@@ -27,6 +27,8 @@ namespace ft
 		protected:
 				pointer	_pointer;
 				pointer	_last;
+		private:
+			//	node<T>		*node;	// ITERATOR IS NOW POINTING TO A PAIR HAHAAHAHAHA
 		public:
 				bidirectional_iterator( void ) { _pointer = NULL; }											 // default
 				bidirectional_iterator( pointer Pointer, pointer Last = NULL )

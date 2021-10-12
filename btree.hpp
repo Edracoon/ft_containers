@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 19:10:09 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/12 19:32:42 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ class	node
 			node*			parent;
 			node*			right;
 			node*			left;
+			
+			pair&	operator*() {
+				return (this->value);
+			}
+			
 };
 
 template <class Pair, class Compare, class Alloc>
@@ -41,10 +46,10 @@ class btree
 			typedef	node<pair>											node;
 			typedef typename Alloc::template rebind< node >::other		allocator_type;
 			
-			typedef	ft::bidirectional_iterator<node>					iterator;
-			typedef	ft::const_bidirectional_iterator<const node>		const_iterator;
-			typedef	ft::reverse_iterator<iterator>						reverse_iterator;
-			typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+			typedef	ft::bidirectional_iterator<node>					iterator;// ITERATOR = PAIR
+			typedef	ft::const_bidirectional_iterator<const node>		const_iterator;// ITERATOR = PAIR
+			typedef	ft::reverse_iterator<iterator>						reverse_iterator;// ITERATOR = PAIR
+			typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;// ITERATOR = PAIR
 	public:
 			Compare						_comp;
 			allocator_type				_alloc;
@@ -177,7 +182,7 @@ class btree
 				if (root->left == NULL && root->right == NULL)
 				{
 					_alloc.destroy(root);
-					// _alloc.deallocate(root, 1);
+					_alloc.deallocate(root, 1);
 					root = NULL;
 				}
 			}

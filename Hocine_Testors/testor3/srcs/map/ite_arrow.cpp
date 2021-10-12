@@ -22,11 +22,8 @@ int		main(void)
 	printPair(ite++);
 	printPair(++ite);
 
-	std::cout << "hello1" << std::endl;
 	it->second.m();
-	std::cout << "hello2" << std::endl;
 	ite->second.m();
-	std::cout << "hello3" << std::endl;
 
 	printPair(++it);
 	printPair(it++);
