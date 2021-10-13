@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:36 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 16:25:56 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/13 17:32:58 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ namespace ft
 				}
 				reverse_iterator operator++(int) {
 					reverse_iterator temp = *this;
-					++(*this);
+					operator++();
 					return temp;
 				}
 				reverse_iterator& operator--() {

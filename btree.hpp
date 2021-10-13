@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 16:12:50 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/13 18:00:08 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,13 @@ namespace ft {
 				}
 				const_iterator	end() const {
 					const_node_ptr	temp = reinterpret_cast<const_node_ptr>(_root);
+					std::cout << "HERE HERE " << reinterpret_cast<const_node_ptr>(_root) << _root << std::endl;
 					// std::cout << "bebug: BEGIN const" << std::endl;
+					// if (temp->right == NULL)
+					// 	return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_get_last())));
 					while (temp != NULL)
 						temp	= temp->right;
-					return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_get_last())));
+					return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_root)));
 				}
 
 				// === INSERT === //

@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 15:42:49 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/13 17:55:21 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ namespace ft
 				const_bidirectional_iterator&	operator++() {
 					if (!_curr_node)
 						return *this;
-					// std::cout << "coucou non const : " << _curr_node->value.first << " - " <<  _curr_node->value.second << std::endl;
+					std::cerr << "coucou const : " << _curr_node->value.first << " - " <<  _curr_node->value.second << std::endl;
 					if (_curr_node != NULL && _curr_node->right != NULL)
 					{
 						_curr_node = _curr_node->right;
@@ -233,8 +233,11 @@ namespace ft
 
 				// --
 				const_bidirectional_iterator&	operator--() {
+					std::cout << "coucou const 123123: " << std::endl;
+					std::cout << "HERE 1: " << _curr_node << std::endl;//->value.first << " - " <<  _curr_node->value.second << std::endl;
 					if (_curr_node == NULL)
 					{
+						std::cout << "last = " << _last << std::endl;
 						_curr_node = _last;
 						return *this;
 					}
