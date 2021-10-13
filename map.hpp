@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/12 18:44:50 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/13 16:18:39 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ namespace ft
 				// BIDIRECTIONAL ITERATOR
 				typedef	typename btree_type::iterator						iterator;
 				typedef	typename btree_type::const_iterator					const_iterator;
-				typedef	ft::reverse_iterator<iterator>					reverse_iterator;
-				typedef	ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+				typedef	ft::reverse_iterator<iterator>						reverse_iterator;
+				typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 
 		public:
 				// Nested class VALUE_COMPARE
@@ -227,7 +227,7 @@ namespace ft
 					return iterator(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")));
 				}
 				const_iterator find (const key_type& k) const {
-					return const_iterator(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")));
+					return const_iterator(reinterpret_cast<typename btree_type::const_node_ptr>(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui"))));
 				}
 
 				// =============

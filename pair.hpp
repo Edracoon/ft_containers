@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:29 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 11:15:30 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/13 11:49:01 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ namespace ft
 			second = pr.second;
 			return (*this);
 		}
-		
 	};
+
 	template <class T1, class T2>
 	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
 		return (lhs.first == rhs.first && lhs.second == rhs.second);
@@ -76,10 +76,10 @@ namespace ft
 		return !(lhs < rhs);;
 	}
 
-	template <class T1,class T2>
-	pair<T1,T2> make_pair (T1 x, T2 y)
+	template <class T1, class T2>
+	pair<T1, T2> make_pair (T1 x, T2 y)
 	{
-		return ( pair<T1,T2>(x,y) );
+		return ( pair<T1, T2>(x,y) );
 	}
 }
 

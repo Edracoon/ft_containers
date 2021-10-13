@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/12 19:32:42 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/13 16:12:50 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,240 +14,228 @@
 # define BTREE_HPP
 
 # include "iterator.hpp"
+# include "node.hpp"
 
 namespace ft {
 
-template <class T>
-class	node
-{
-	public:
-			typedef	T			pair;
+				   // T
+	template <class T, class Compare, class Alloc>
+	class btree
+	{
+		public:
+				typedef Compare												value_compare;
+				
+				typedef	node<const T>										const_node;
+				typedef	node<T>												node;
 
-			node(const pair& Value) : value(Value), parent(NULL), right(NULL), left(NULL) { }
+				typedef node*												node_ptr;
+				typedef const_node*											const_node_ptr;
 
-			pair			value; // pair
-			node*			parent;
-			node*			right;
-			node*			left;
-			
-			pair&	operator*() {
-				return (this->value);
-			}
-			
-};
+				typedef typename Alloc::template rebind< node >::other		allocator_type;
+				
+				typedef	ft::bidirectional_iterator<T>						iterator;
+				typedef	ft::const_bidirectional_iterator<T>					const_iterator;
+				typedef	ft::reverse_iterator<iterator>						reverse_iterator;
+				typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+		public:
+				value_compare				_comp;
+				allocator_type				_alloc;
+				node_ptr					_root;
+				node_ptr					_last;
+		public:
 
-template <class Pair, class Compare, class Alloc>
-class btree
-{
-	public:
-			typedef Pair												pair;
-			typedef Compare												value_compare;
-			
-			typedef	node<pair>											node;
-			typedef typename Alloc::template rebind< node >::other		allocator_type;
-			
-			typedef	ft::bidirectional_iterator<node>					iterator;// ITERATOR = PAIR
-			typedef	ft::const_bidirectional_iterator<const node>		const_iterator;// ITERATOR = PAIR
-			typedef	ft::reverse_iterator<iterator>						reverse_iterator;// ITERATOR = PAIR
-			typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;// ITERATOR = PAIR
-	public:
-			Compare						_comp;
-			allocator_type				_alloc;
-			node*						_root;
-			node*						_last;
-	public:
-
-			// === CONSTRUCTOR === //
-			btree( void ) : _comp(Compare()), _alloc(allocator_type()), _root(NULL) { }
-			btree(Compare	comp) : _comp(comp), _alloc(allocator_type()), _root(NULL) { }
-			template <class InputIterator>
-			btree(InputIterator first, InputIterator last, Compare comp, allocator_type alloc) : _comp(comp), _alloc(alloc), _root(NULL)
-			{
-				for ( ; first != last ; first++)
-					btree_insert(&_root, *first);
-			}
-
-	private:
-			node*	_get_last() const {
-				node	*temp = _root;
-				node	*last = NULL;
-				while (temp != NULL)
+				// === CONSTRUCTOR === //
+				btree( void ) : _comp(value_compare()), _alloc(allocator_type()), _root(NULL) { }
+				btree(value_compare	comp) : _comp(comp), _alloc(allocator_type()), _root(NULL) { }
+				template <class InputIterator>
+				btree(InputIterator first, InputIterator last, value_compare comp, allocator_type alloc)
+					: _comp(comp), _alloc(alloc), _root(NULL)
 				{
-					last	= temp;
-					temp	= temp->right;
+					for ( ; first != last ; first++)
+						btree_insert(&_root, *first);
 				}
-				return (last);
-			}
 
-	public:
-			iterator	begin() {
-				node *temp = _root;
-				// std::cout << "bebug: BEGIN non const" << std::endl;
-				// if (_root->left == NULL)
-				// 	return iterator(_root, NULL);
-				if (_root) {
-					while (temp->left != NULL)
-						temp = temp->left;
-				}
-				return (iterator(temp, NULL));
-			}
-			const_iterator	begin() const {
-				node *temp = _root;
-				// std::cout << "bebug: BEGIN const" << std::endl;
-				// if (_root->left == NULL)
-				// 	return iterator(_root, _get_last());
-				if (_root) {
-					while (temp->left != NULL)
-						temp = temp->left;
-				}
-				return (const_iterator(temp, _get_last()));
-			}
-
-			iterator	end() {
-				node *temp = _root;
-				_last = NULL;
-				// std::cout << "bebug: END non const" << std::endl;
-				while (temp != NULL)
-				{
-					_last	= temp;
-					temp	= temp->right;
-				}
-				return (iterator(temp, _last));
-			}
-			const_iterator	end() const {
-				node *temp = _root;
-				// std::cout << "bebug: BEGIN const" << std::endl;
-				while (temp != NULL)
-					temp	= temp->right;
-				return (const_iterator(temp, _get_last()));
-			}
-
-			// === INSERT === //
-			iterator btree_insert(node **root, const pair& value)
-			{
-				if (*root == NULL)
-				{
-					*root = _alloc.allocate(1);
-					_alloc.construct(*root, value);
-					(*root)->left		= NULL;
-					(*root)->right		= NULL;
-					(*root)->parent		= NULL;
-					return iterator(*root, NULL);
-				}
-				while ((*root) != NULL)
-				{
-					// si les key sont egales, ne pas insert
-					if (!_comp((*root)->value.first, value.first) && !_comp(value.first, (*root)->value.first))
-						return (iterator(*root, NULL));
-					// left insert
-					if ((*root)->left == NULL && !(_comp((*root)->value.first, value.first)))
+		private:
+				node_ptr	_get_last() const {
+					node_ptr	temp = _root;
+					node_ptr	last = NULL;
+					while (temp != NULL)
 					{
-						(*root)->left = _alloc.allocate(1);
-						_alloc.construct((*root)->left, value);
-						(*root)->left->parent = *root;
-						return iterator((*root)->left, NULL);
+						last	= temp;
+						temp	= temp->right;
 					}
-					// right insert
-					if ((*root)->right == NULL && (_comp((*root)->value.first, value.first)))
+					return (last);
+				}
+
+		public:
+				iterator	begin() {
+					node_ptr	temp = _root;
+					// std::cout << "bebug: BEGIN non const" << std::endl;
+					// if (_root->left == NULL)
+					// 	return iterator(_root, NULL);
+					if (_root) {
+						while (temp->left != NULL)
+							temp = temp->left;
+					}
+					return (iterator(temp, NULL));
+				}
+				const_iterator	begin() const {
+					const_node_ptr	temp = reinterpret_cast<const_node_ptr>(_root);
+					// std::cout << "bebug: BEGIN const" << std::endl;
+					// if (_root->left == NULL)
+					// 	return iterator(_root, _get_last());
+					if (_root) {
+						while (temp->left != NULL)
+							temp = temp->left;
+					}
+					return (const_iterator(temp, NULL));
+				}
+
+				iterator	end() {
+					node_ptr	temp = _root;
+					_last = NULL;
+					// std::cout << "bebug: END non const" << std::endl;
+					while (temp != NULL)
 					{
-						(*root)->right = _alloc.allocate(1);
-						_alloc.construct((*root)->right, value);
-						(*root)->right->parent = *root;
-						return iterator((*root)->right, NULL);
+						_last	= temp;
+						temp	= temp->right;
 					}
-					if (_comp((*root)->value.first, value.first))
-						root = &((*root)->right);
-					else if (!_comp((*root)->value.first, value.first))
-						root = &((*root)->left);
+					return (iterator(temp, _last));
 				}
-				return iterator(NULL, NULL);
-			}
+				const_iterator	end() const {
+					const_node_ptr	temp = reinterpret_cast<const_node_ptr>(_root);
+					// std::cout << "bebug: BEGIN const" << std::endl;
+					while (temp != NULL)
+						temp	= temp->right;
+					return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_get_last())));
+				}
 
-			// === SIZE ===
-			int	size(node *root) const
-			{
-				if (root == NULL)
-					return (0);
-				return (size((root->left)) + 1 + size((root->right)));
-			}
-
-			// === CLEAR === //
-			void	btree_clear(node *root)
-			{
-				if (root == NULL)
-					return ;
-
-				btree_clear((root->left));
-				btree_clear((root->right));
-				if (root->left == NULL && root->right == NULL)
+				// === INSERT === //
+				iterator btree_insert(node **root, const T& value)
 				{
-					_alloc.destroy(root);
-					_alloc.deallocate(root, 1);
-					root = NULL;
+					if (*root == NULL)
+					{
+						*root = _alloc.allocate(1);
+						_alloc.construct(*root, value);
+						(*root)->left		= NULL;
+						(*root)->right		= NULL;
+						(*root)->parent		= NULL;
+						return iterator(*root, NULL);
+					}
+					while ((*root) != NULL)
+					{
+						// si les key sont egales, ne pas insert
+						if (!_comp((*root)->value.first, value.first) && !_comp(value.first, (*root)->value.first))
+							return (iterator(*root, NULL));
+						// left insert
+						if ((*root)->left == NULL && !(_comp((*root)->value.first, value.first)))
+						{
+							(*root)->left = _alloc.allocate(1);
+							_alloc.construct((*root)->left, value);
+							(*root)->left->parent = *root;
+							return iterator((*root)->left, NULL);
+						}
+						// right insert
+						if ((*root)->right == NULL && (_comp((*root)->value.first, value.first)))
+						{
+							(*root)->right = _alloc.allocate(1);
+							_alloc.construct((*root)->right, value);
+							(*root)->right->parent = *root;
+							return iterator((*root)->right, NULL);
+						}
+						if (_comp((*root)->value.first, value.first))
+							root = &((*root)->right);
+						else if (!_comp((*root)->value.first, value.first))
+							root = &((*root)->left);
+					}
+					return iterator(NULL, NULL);
 				}
-			}
 
-			// === FIND === //
-			pair* btree_find_pair(node *root, pair data_ref) const
-			{
-				pair*	ret;
-				if (root == NULL)
-					return (NULL);
+				// === SIZE ===
+				int	size(node *root) const
+				{
+					if (root == NULL)
+						return (0);
+					return (size((root->left)) + 1 + size((root->right)));
+				}
 
-				ret = btree_find_pair(root->left, data_ref);
-				if (ret == NULL && !_comp(data_ref.first, root->value.first) && !_comp(root->value.first, data_ref.first))	// std::less<key>
-					return &(root->value);
-				if (ret == NULL)
-					ret = btree_find_pair(root->right, data_ref);
-				return (ret);
-			}
-			
-			node* btree_find_node(node *root, pair data_ref) const
-			{
-				node*	ret;
-				if (root == NULL)
-					return (NULL);
+				// === CLEAR === //
+				void	btree_clear(node *root)
+				{
+					if (root == NULL)
+						return ;
 
-				ret = btree_find_node(root->left, data_ref);
-				if (ret == NULL && !_comp(data_ref.first, root->value.first) && !_comp(root->value.first, data_ref.first))	// std::less<key>
-					return (root);
-				if (ret == NULL)
-					ret = btree_find_node(root->right, data_ref);
-				return (ret);
-			}
+					btree_clear((root->left));
+					btree_clear((root->right));
+					if (root->left == NULL && root->right == NULL)
+					{
+						_alloc.destroy(root);
+						_alloc.deallocate(root, 1);
+						root = NULL;
+					}
+				}
 
-			// delete => trouver la valeur a delete puis aller dans le subtree de gauche et chercher la plus grande valeure
-			// 			puis la mettre a la place de la node deleted
+				// === FIND === //
+				T* btree_find_pair(node *root, T data_ref) const
+				{
+					T*	ret;
+					if (root == NULL)
+						return (NULL);
 
-			// === LEVEL COUNT === //
-			int btree_level_count(node *root)
-			{
-				pair	retleft;
-				pair	retright;
+					ret = btree_find_pair(root->left, data_ref);
+					if (ret == NULL && !_comp(data_ref.first, root->value.first) && !_comp(root->value.first, data_ref.first))	// std::less<key>
+						return &(root->value);
+					if (ret == NULL)
+						ret = btree_find_pair(root->right, data_ref);
+					return (ret);
+				}
+				
+				node* btree_find_node(node *root, T data_ref) const
+				{
+					node*	ret;
+					if (root == NULL)
+						return (NULL);
 
-				if (root == NULL)
-					return (0);
+					ret = btree_find_node(root->left, data_ref);
+					if (ret == NULL && !_comp(data_ref.first, root->value.first) && !_comp(root->value.first, data_ref.first))	// std::less<key>
+						return (root);
+					if (ret == NULL)
+						ret = btree_find_node(root->right, data_ref);
+					return (ret);
+				}
 
-				retleft = btree_level_count(root->left);
-				retright = btree_level_count(root->right);
+				// delete => trouver la valeur a delete puis aller dans le subtree de gauche et chercher la plus grande valeure
+				// 			puis la mettre a la place de la node deleted
 
-				return ( (_comp(retleft, retright) == false ? retleft : retright) + 1 );
-			}
+				// === LEVEL COUNT === //
+				int btree_level_count(node *root)
+				{
+					T	retleft;
+					T	retright;
 
-			void	btree_display(node *root, int space)
-			{
-				int	i = 5;
+					if (root == NULL)
+						return (0);
 
-				if (root == NULL)
-					return ;
-				space += 5;
-				btree_display(root->right, space);
-				while (i++ < space)
-					printf(" ");
-				std::cout << root->value.first << " - " <<  root->value.second << std::endl;
-				btree_display(root->left, space);
-			}
-};
+					retleft = btree_level_count(root->left);
+					retright = btree_level_count(root->right);
+
+					return ( (_comp(retleft, retright) == false ? retleft : retright) + 1 );
+				}
+
+				void	btree_display(node *root, int space)
+				{
+					int	i = 5;
+
+					if (root == NULL)
+						return ;
+					space += 5;
+					btree_display(root->right, space);
+					while (i++ < space)
+						printf(" ");
+					std::cout << root->value.first << " - " <<  root->value.second << std::endl;
+					btree_display(root->left, space);
+				}
+	};
 
 }
 

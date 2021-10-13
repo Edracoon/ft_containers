@@ -25,6 +25,5 @@ int	main(void)
 		--ite;
 		std::cout << "ite = [" << ite->first << " - " << ite->second << "]" << std::endl;
 	}
-	map_test.swap();
 	return (0);
 }
