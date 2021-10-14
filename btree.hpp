@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/14 13:22:46 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/14 17:48:54 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ namespace ft {
 				typedef node*												node_ptr;
 				typedef const_node*											const_node_ptr;
 
+				typedef typename T::first_type								key_type;
 				typedef typename Alloc::template rebind< node >::other		allocator_type;
 				
 				typedef	ft::bidirectional_iterator<T>						iterator;
@@ -127,6 +128,55 @@ namespace ft {
 							root = &((*root)->left);
 					}
 					return iterator(NULL, NULL);
+				}
+
+				node*	get_inorder_successor(node* right) {
+					node*	temp = right;
+					while (temp && temp->left != NULL) {
+						temp = temp->left;
+					}
+					return (temp);
+				}
+				// === DELETE ===
+				node* delete_node(node* root, const key_type& k)
+				{
+					if (root == NULL)
+						return (root);
+					this->btree_display(root, 0);
+					std::cout << "delete_node" << std::endl;
+					if (_comp(k, root->value.first))
+						root->left = delete_node(root->left, k);
+					else if (_comp(root->value.first, k))
+						root->right = delete_node(root->right, k);
+					
+					else // Ici on a trouvé la node a delete car K est ni inferieur ni superieur
+					{
+						if (root->right == NULL && root->left == NULL)	// Si c'est une feuille
+						{
+							_alloc.destroy(root);
+							_alloc.deallocate(root, 1);
+							return NULL;
+						}
+						else if (root->left == NULL)		// Si il a qu'un seul enfant right
+						{
+							std::cout << "here" << std::endl;
+							node*	temp = root->right;
+							_alloc.destroy(root);
+							_alloc.deallocate(root, 1);
+							return (temp);
+						}
+						else if (root->right == NULL)		// Si il a qu'un seul enfant left
+						{
+							node*	temp = root->left;
+							_alloc.destroy(root);
+							_alloc.deallocate(root, 1);
+							return (temp);
+						}
+						node* temp	= get_inorder_successor(root->right);	// si la node a deux enfants prendre le inorder successor de root
+						root->value = temp->value;							// Swap les pairs
+						root->right = delete_node(root->right, temp->value.first);
+					}
+					return (root);
 				}
 
 				// === SIZE ===

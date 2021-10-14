@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/14 13:55:57 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/14 17:50:46 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,6 @@ namespace ft
 					
 					return ft::make_pair(it, insertable);
 				}
-
 				iterator insert (iterator position, const value_type& val) {
 					(void)position;
 
@@ -228,7 +227,6 @@ namespace ft
 					
 					return (ret);
 				}
-
 				template <class InputIterator>
 				void insert (InputIterator first, InputIterator last) {
 					for ( ; first != last ; first++) {
@@ -236,6 +234,26 @@ namespace ft
 					}
 				}
 
+				// =============
+				// === ERASE ===
+				// =============
+				void erase (iterator position) {
+					this->erase(position->first);
+				}
+				size_type erase (const key_type& k) {
+					size_type ret = _tree.btree_find_pair(_tree._root, ft::make_pair(k, "oui")) == NULL ? 0 : 1;
+					_tree.delete_node(_tree._root, k);
+					return (ret);
+				}
+				void erase (iterator first, iterator last) {
+					for ( ; first != last ; first++) {
+						this->erase(first);
+					}
+				}
+
+				// ===================
+				// === LOWER_BOUND ===
+				// ===================
 				iterator lower_bound (const key_type& k) {
 					iterator	it	= this->begin();
 					iterator	ite	= this->end();
@@ -253,6 +271,38 @@ namespace ft
 							break ;
 					}
 					return (it);
+				}
+
+				// ===================
+				// === UPPER_BOUND ===
+				// ===================
+				iterator upper_bound (const key_type& k) {
+					iterator	it	= this->begin();
+					iterator	ite	= this->end();
+					for ( ; it != ite ; it++) {
+						if (_comp(k, it->first) == true)
+							break ;
+					}
+					return (it);
+				}
+				const_iterator upper_bound (const key_type& k) const {
+					const_iterator	it	= this->begin();
+					const_iterator	ite	= this->end();
+					for ( ; it != ite ; it++) {
+						if (_comp(k, it->first) == true)
+							break ;
+					}
+					return (it);
+				}
+
+				// ===================
+				// === EQUAL_RANGE ===
+				// ===================
+				pair<iterator,iterator>				equal_range (const key_type& k) {
+					return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
+				}
+				pair<const_iterator,const_iterator> equal_range (const key_type& k) const {
+					return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
 				}
 
 				// === OPERATORS === //
