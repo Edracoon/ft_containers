@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 17:55:21 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/14 13:44:15 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 				typedef std::bidirectional_iterator_tag				iterator_category;
 				typedef typename ft::node<T>						node;
 				typedef	node*										node_ptr;
-		private:
+		public:
 				node_ptr		_curr_node;
 				node_ptr		_last;
 		public:
@@ -49,11 +49,15 @@ namespace ft
 				bidirectional_iterator( node_ptr Node, node_ptr Last = NULL )
 					: _curr_node(Node), _last(Last) { }
 				template <class Iter>
-				bidirectional_iterator (const bidirectional_iterator<Iter> & rhs) : _curr_node(rhs.base()) { } // copy
+				bidirectional_iterator (const bidirectional_iterator<Iter> & rhs) : _curr_node(rhs.base()), _last(rhs._last) { } // copy
 				~bidirectional_iterator( void ) {  }														 // destruct
 
 				// recup le pointer de l'iterator (conversion plus simple que &(*(iterator)))
-				node_ptr base(void) const {
+				pointer base(void) const {
+					return &(_curr_node->value);
+				}
+				
+				node_ptr base_node(void) const {
 					return (_curr_node);
 				}
 
@@ -81,7 +85,6 @@ namespace ft
 				bidirectional_iterator&	operator++() {
 					if (!_curr_node)
 						return *this;
-					// std::cout << "coucou non const : " << _curr_node->value.first << " - " <<  _curr_node->value.second << std::endl;
 					if (_curr_node != NULL && _curr_node->right != NULL)
 					{
 						_curr_node = _curr_node->right;
@@ -102,7 +105,6 @@ namespace ft
 				bidirectional_iterator	operator++(int) {
 					bidirectional_iterator	temp = *this;
 					operator++();
-					// std::cout << "coucou non const : " << (*temp).first << " - " << (*temp).second << std::endl;
 					return temp;
 				}
 
@@ -133,18 +135,6 @@ namespace ft
 				}
 	};
 
-	// OUT OF CLASS COMPARISON
-	// template <class Iterator1, class Iterator2>
-	// bool operator== (const ft::bidirectional_iterator<Iterator1>& lhs,	
-	// 			const ft::bidirectional_iterator<Iterator2>& rhs) {
-	// 	return (lhs.base() == rhs.base());
-	// }
-	// template <class Iterator1, class Iterator2>
-	// bool operator!= (const ft::bidirectional_iterator<Iterator1>& lhs,
-	// 				const ft::bidirectional_iterator<Iterator2>& rhs) {
-	// 	return (lhs.base() != rhs.base());
-	// }
-	
 	// =======================================
 	// ==== CONST BIDIRECTIONAL ITERATOR =====
 	// =======================================
@@ -163,22 +153,26 @@ namespace ft
 				typedef std::bidirectional_iterator_tag				iterator_category;
 				typedef typename ft::node<value_type>				node;
 				typedef	node*										node_ptr;
-		private:
+		public:
 				node_ptr		_curr_node;
 				node_ptr		_last;
 		public:
 				const_bidirectional_iterator( void )
-					: _curr_node(NULL), _last(NULL) { }	 // default
+					: _curr_node(NULL), _last(NULL) { }	// default
 				const_bidirectional_iterator( node_ptr Node, node_ptr Last = NULL )
 					: _curr_node(Node), _last(Last) { }
 				template <class Iter>
 				const_bidirectional_iterator (const const_bidirectional_iterator<Iter> & rhs) : _curr_node(rhs.base()) { } // copy
 				template <class Iter>
-				const_bidirectional_iterator (const bidirectional_iterator<Iter> & rhs) : _curr_node(reinterpret_cast<node_ptr>(rhs.base())) { }
+				const_bidirectional_iterator (const bidirectional_iterator<Iter> & rhs) : _curr_node(reinterpret_cast<node_ptr>(rhs.base())), _last(reinterpret_cast<node_ptr>(rhs._last)) { }
 				~const_bidirectional_iterator( void ) {  }														 // destruct
 
 				// recup le pointer de l'iterator (conversion plus simple que &(*(iterator)))
-				node_ptr base(void) const {
+				pointer base(void) const {
+					return &(_curr_node->value);
+				}
+
+				node_ptr base_node(void) const {
 					return (_curr_node);
 				}
 
@@ -206,7 +200,6 @@ namespace ft
 				const_bidirectional_iterator&	operator++() {
 					if (!_curr_node)
 						return *this;
-					std::cerr << "coucou const : " << _curr_node->value.first << " - " <<  _curr_node->value.second << std::endl;
 					if (_curr_node != NULL && _curr_node->right != NULL)
 					{
 						_curr_node = _curr_node->right;
@@ -227,17 +220,13 @@ namespace ft
 				const_bidirectional_iterator	operator++(int) {
 					const_bidirectional_iterator	temp = *this;
 					operator++();
-					// std::cout << "coucou non const : " << (*temp).first << " - " << (*temp).second << std::endl;
 					return temp;
 				}
 
 				// --
 				const_bidirectional_iterator&	operator--() {
-					std::cout << "coucou const 123123: " << std::endl;
-					std::cout << "HERE 1: " << _curr_node << std::endl;//->value.first << " - " <<  _curr_node->value.second << std::endl;
 					if (_curr_node == NULL)
 					{
-						std::cout << "last = " << _last << std::endl;
 						_curr_node = _last;
 						return *this;
 					}

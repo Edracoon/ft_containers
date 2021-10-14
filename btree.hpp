@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 18:00:08 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/14 13:22:46 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ namespace ft {
 				value_compare				_comp;
 				allocator_type				_alloc;
 				node_ptr					_root;
-				node_ptr					_last;
 		public:
 
 				// === CONSTRUCTOR === //
@@ -58,59 +57,35 @@ namespace ft {
 		private:
 				node_ptr	_get_last() const {
 					node_ptr	temp = _root;
-					node_ptr	last = NULL;
-					while (temp != NULL)
-					{
-						last	= temp;
-						temp	= temp->right;
-					}
-					return (last);
+					if (temp)
+						while (temp->right != NULL)
+							temp	= temp->right;
+					return (temp);
 				}
 
 		public:
 				iterator	begin() {
 					node_ptr	temp = _root;
-					// std::cout << "bebug: BEGIN non const" << std::endl;
-					// if (_root->left == NULL)
-					// 	return iterator(_root, NULL);
 					if (_root) {
 						while (temp->left != NULL)
 							temp = temp->left;
 					}
-					return (iterator(temp, NULL));
+					return (iterator(temp, _get_last()));
 				}
 				const_iterator	begin() const {
 					const_node_ptr	temp = reinterpret_cast<const_node_ptr>(_root);
-					// std::cout << "bebug: BEGIN const" << std::endl;
-					// if (_root->left == NULL)
-					// 	return iterator(_root, _get_last());
 					if (_root) {
 						while (temp->left != NULL)
 							temp = temp->left;
 					}
-					return (const_iterator(temp, NULL));
+					return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_get_last())));
 				}
 
 				iterator	end() {
-					node_ptr	temp = _root;
-					_last = NULL;
-					// std::cout << "bebug: END non const" << std::endl;
-					while (temp != NULL)
-					{
-						_last	= temp;
-						temp	= temp->right;
-					}
-					return (iterator(temp, _last));
+					return (iterator(NULL, _get_last()));
 				}
 				const_iterator	end() const {
-					const_node_ptr	temp = reinterpret_cast<const_node_ptr>(_root);
-					std::cout << "HERE HERE " << reinterpret_cast<const_node_ptr>(_root) << _root << std::endl;
-					// std::cout << "bebug: BEGIN const" << std::endl;
-					// if (temp->right == NULL)
-					// 	return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_get_last())));
-					while (temp != NULL)
-						temp	= temp->right;
-					return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_root)));
+					return (const_iterator(NULL, reinterpret_cast<const_node_ptr>(_get_last())));
 				}
 
 				// === INSERT === //

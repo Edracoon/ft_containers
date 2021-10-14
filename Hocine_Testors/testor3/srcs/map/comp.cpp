@@ -11,13 +11,9 @@ void	ft_comp(const _map &mp, const const_it &it1, const const_it &it2)
 {
 	bool res[2];
 		
-	std::cout << "hello1" << std::endl;
 	std::cout << "\t-- [" << ++i << "] --" << std::endl;
-	std::cout << "hello2" << std::endl;
 	res[0] = mp.key_comp()(it1->first, it2->first);
-	std::cout << "hello3" << std::endl;
 	res[1] = mp.value_comp()(*it1, *it2);
-	std::cout << "hello4" << std::endl;
 	std::cout << "with [" << it1->first << " and " << it2->first << "]: ";
 	std::cout << "key_comp: " << res[0] << " | " << "value_comp: " << res[1] << std::endl;
 }

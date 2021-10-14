@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:28:48 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 15:38:44 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/14 13:15:29 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,20 @@ namespace ft {
 				node*			left;
 
 				node*			sentinelle; // si les fils de la sentinelle sont NULL : on est a end
-				
+
 				T&	operator*() {
 					return (this->value);
 				}
 	};
+	// template <class type1, class type2>
+	// bool operator==(const node<type1>& lhs, const node<type2>& rhs) {
+	// 	return (lhs.value == rhs.value);
+	// }
+	// template <class type1, class type2>
+	// bool operator!=(const node<type1>& lhs, const node<type2>& rhs) {
+	// 	std::cout << "hello123" << std::endl;
+	// 	return (lhs.value != rhs.value);
+	// }
 }
 
 #endif

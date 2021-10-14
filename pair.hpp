@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:29 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 11:49:01 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/14 13:27:24 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace ft
 		first_type		first;
 		second_type		second;
 		
-		pair( void ) : first(), second() { }
+		pair( void ) : first(first_type()), second(second_type()) { }
 
 		template<class U, class V>
 		pair ( const pair< U, V > & pr ) : first(pr.first), second(pr.second) { }
@@ -53,6 +53,7 @@ namespace ft
 	
 	template <class T1, class T2>
 	bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+		
 		return !(lhs == rhs);
 	}
 

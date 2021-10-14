@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/13 16:18:39 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/14 13:55:57 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,41 +119,13 @@ namespace ft
 
 				// === SWAP ===
 				void swap (map& x) {
-					
-					// Les deux methodes marchent mais les iterateurs sont invalidés
-					
 					// Swap the tree roots
-					// btree_type	temp_tree = btree_type();
-					
-					// temp_tree._root = this->_tree._root;
-					// this->_tree._root = x._tree._root;
-					// x._tree._root = temp_tree._root;
+					btree_type		temp_tree	= btree_type();
 
-					// Swap the elements with inserts
-					ft::map<key_type, mapped_type, key_compare, allocator_type>		temp;
-					
-					temp.insert(this->begin(), this->end());
-					
-					this->clear();
-					this->insert(x.begin(), x.end());
+					temp_tree._root = this->_tree._root;
+					this->_tree._root = x._tree._root;
+					x._tree._root = temp_tree._root;
 
-					x.clear();
-					x.insert(temp.begin(), temp.end());
-
-					// CODE SOURCE :
-
-					/*swap(__begin_node_, __t.__begin_node_);
-					swap(__pair1_.first(), __t.__pair1_.first());
-					__swap_allocator(__node_alloc(), __t.__node_alloc());
-					__pair3_.swap(__t.__pair3_);
-					if (size() == 0)
-						__begin_node() = __end_node();
-					else
-						__end_node()->__left_->__parent_ = static_cast<__parent_pointer>(__end_node());
-					if (__t.size() == 0)
-						__t.__begin_node() = __t.__end_node();
-					else
-					__t.__end_node()->__left_->__parent_ = static_cast<__parent_pointer>(__t.__end_node());*/
 				}
 
 				// ===================
@@ -262,6 +234,25 @@ namespace ft
 					for ( ; first != last ; first++) {
 						this->_tree.btree_insert(&(_tree._root), *first);
 					}
+				}
+
+				iterator lower_bound (const key_type& k) {
+					iterator	it	= this->begin();
+					iterator	ite	= this->end();
+					for ( ; it != ite ; it++) {
+						if (_comp(it->first, k) == false)
+							break ;
+					}
+					return (it);
+				}
+				const_iterator lower_bound (const key_type& k) const {
+					const_iterator	it	= this->begin();
+					const_iterator	ite	= this->end();
+					for ( ; it != ite ; it++) {
+						if (_comp(it->first, k) == false)
+							break ;
+					}
+					return (it);
 				}
 
 				// === OPERATORS === //

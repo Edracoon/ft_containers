@@ -17,16 +17,10 @@ int		main(void)
 	TESTED_NAMESPACE::map<T1, T2>::const_reverse_iterator ite(mp.rbegin());
 	printSize(mp);
 
-	mp.print_tree();
-	std::cout << "DEBUG 1 : rite_arrow" << std::endl;
 	printPair(++ite);
-	std::cout << "DEBUG 2 : rite_arrow" << std::endl;
 	printPair(ite++);
-	std::cout << "DEBUG 3 : rite_arrow" << std::endl;
 	printPair(ite++);
-	std::cout << "DEBUG 4 : rite_arrow" << std::endl;
 	printPair(++ite);
-	std::cout << "DEBUG 5 : rite_arrow" << std::endl;
 
 	it->second.m();
 	ite->second.m();
