@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/02 09:33:20 by bvalette          #+#    #+#             */
-/*   Updated: 2021/09/29 18:25:40 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/18 12:33:43 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 
 #include "../../../vector.hpp"
 #include "../../../stack.hpp"
+#include "../../../map.hpp"
 
 
 #endif

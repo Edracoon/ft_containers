@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:28:48 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 10:59:09 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/18 18:50:31 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ namespace ft {
 	template <class T>
 	class	node
 	{
-		public:	// faire une node sentinelle au lieu d'un last 
+		public:	// faire une node sentinelle au lieu d'un last
 				node(const T& Value) : value(Value), parent(NULL), right(NULL), left(NULL) { }
 				node(const node& rhs)
 					: value(rhs.value), parent(rhs.parent), right(rhs.right), left(rhs.left) { }
@@ -27,16 +27,26 @@ namespace ft {
 					: value(rhs.value), parent(rhs.parent), right(rhs.right), left(rhs.left) { }
 
 				~node() { }
+				
 				T				value;
+			
 				node*			parent;
 				node*			right;
 				node*			left;
 
-				node*			sentinelle; // si les fils de la sentinelle sont NULL : on est a end
+				node*			NIL;
 
-				T&	operator*() {
-					return (this->value);
+				bool			color;
+
+				node*	uncle() {
+					if (this->parent != NIL && this->parent->parent != NIL && this->parent->parent->left == *this)
+						return (this->parent->parent->right);
+					else if (this->parent != NIL && this->parent->parent != NIL && this->parent->parent->right == *this)
+						return (this->parent->parent->left);
+					return (NULL); 
 				}
+
+				
 	};
 	// template <class type1, class type2>
 	// bool operator==(const node<type1>& lhs, const node<type2>& rhs) {

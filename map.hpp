@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 11:30:12 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/18 19:44:16 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,21 +192,28 @@ namespace ft
 					return (!_tree.size((_tree._root)));
 				}
 
+				// ================
+				// === MAX_SIZE ===
+				// ================
+				size_type max_size( void ) const {
+					return (_tree.max_size());
+				}
+
 				// ============
 				// === FIND ===
 				// ============
 				iterator find (const key_type& k) {
-					return iterator(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")));
+					return iterator(_tree.btree_find_node(_tree._root, k));
 				}
 				const_iterator find (const key_type& k) const {
-					return const_iterator(reinterpret_cast<typename btree_type::const_node_ptr>(_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui"))));
+					return const_iterator(reinterpret_cast<typename btree_type::const_node_ptr>(_tree.btree_find_node(_tree._root, k)));
 				}
 
 				// =============
 				// === COUNT ===
 				// =============
 				size_type count (const key_type& k) const {
-					return (_tree.btree_find_node(_tree._root, ft::make_pair(k, "oui")) != NULL ? 1 : 0);
+					return (_tree.btree_find_node(_tree._root, k) != NULL ? 1 : 0);
 				}
 
 				// ==============
@@ -214,7 +221,7 @@ namespace ft
 				// ==============
 				pair<iterator, bool> insert (const value_type& val) {
 					
-					bool		insertable	= _tree.btree_find_pair(_tree._root, val) == NULL ? true : false;
+					bool		insertable	= _tree.btree_find_pair(_tree._root, val.first) == NULL ? true : false;
 					iterator	it = _tree.btree_insert(&(_tree._root), val);
 					
 					return ft::make_pair(it, insertable);
@@ -223,7 +230,7 @@ namespace ft
 					(void)position;
 
 					this->insert(val);
-					iterator	ret = iterator(_tree.btree_find_node(_tree._root, val));
+					iterator	ret = iterator(_tree.btree_find_node(_tree._root, val.first));
 					
 					return (ret);
 				}
@@ -241,7 +248,7 @@ namespace ft
 					this->erase(position->first);
 				}
 				size_type erase (const key_type& k) {
-					size_type ret = _tree.btree_find_pair(_tree._root, ft::make_pair(k, "oui")) == NULL ? 0 : 1;
+					size_type ret = _tree.btree_find_pair(_tree._root, k) == NULL ? 0 : 1;
 					_tree._root = _tree.delete_node(_tree._root, k);
 					return (ret);
 				}
@@ -323,6 +330,12 @@ namespace ft
 					_tree.btree_display(_tree._root, 0);
 				}
 	};
+	// NON MEMBER SWAP
+	template <class Key, class T, class Compare, class Alloc>
+	void swap (map<Key, T, Compare, Alloc>& x, map<Key, T, Compare, Alloc>& y) {
+		x.swap(y);
+	}
+
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs,
 						const ft::map<Key,T,Compare,Alloc>& rhs ) {
