@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/14 17:50:46 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/18 11:30:12 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,7 @@ namespace ft
 				}
 				size_type erase (const key_type& k) {
 					size_type ret = _tree.btree_find_pair(_tree._root, ft::make_pair(k, "oui")) == NULL ? 0 : 1;
-					_tree.delete_node(_tree._root, k);
+					_tree._root = _tree.delete_node(_tree._root, k);
 					return (ret);
 				}
 				void erase (iterator first, iterator last) {

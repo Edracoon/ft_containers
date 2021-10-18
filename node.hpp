@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:28:48 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 09:30:35 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/18 10:59:09 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ namespace ft {
 				node(const node<type>& rhs)
 					: value(rhs.value), parent(rhs.parent), right(rhs.right), left(rhs.left) { }
 
-				~node() { parent = NULL; right = NULL; left = NULL; }
+				~node() { }
 				T				value;
 				node*			parent;
 				node*			right;

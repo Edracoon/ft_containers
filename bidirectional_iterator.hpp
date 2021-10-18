@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 09:24:04 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/18 10:09:29 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,9 @@ namespace ft
 				bidirectional_iterator&	operator++() {
 					if (!_curr_node)
 						return *this;
-					if (_curr_node != NULL && _curr_node->right != NULL)
+					if (_curr_node == _last)
+						_curr_node = NULL;
+					else if (_curr_node != NULL && _curr_node->right != NULL)
 					{
 						_curr_node = _curr_node->right;
 						while (_curr_node->left != NULL)
@@ -200,7 +202,9 @@ namespace ft
 				const_bidirectional_iterator&	operator++() {
 					if (!_curr_node)
 						return *this;
-					if (_curr_node != NULL && _curr_node->right != NULL)
+					if (_curr_node == _last)
+						_curr_node = NULL;
+					else if (_curr_node != NULL && _curr_node->right != NULL)
 					{
 						_curr_node = _curr_node->right;
 						while (_curr_node->left != NULL)

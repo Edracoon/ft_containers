@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 09:29:21 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/18 11:37:59 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 namespace ft {
 
-				   // T
 	template <class T, class Compare, class Alloc>
 	class btree
 	{
@@ -56,11 +55,20 @@ namespace ft {
 				}
 
 		private:
+				// === UTILS === // 
 				node_ptr	_get_last() const {
 					node_ptr	temp = _root;
 					if (temp)
 						while (temp->right != NULL)
 							temp	= temp->right;
+					return (temp);
+				}
+			
+				node_ptr	_get_inorder_successor(node_ptr right) {
+					node_ptr	temp = right;
+					while (temp && temp->left != NULL) {
+						temp = temp->left;
+					}
 					return (temp);
 				}
 
@@ -130,60 +138,56 @@ namespace ft {
 					return iterator(NULL, NULL);
 				}
 
-				node*	get_inorder_successor(node* right) {
-					node*	temp = right;
-					while (temp && temp->left != NULL) {
-						temp = temp->left;
-					}
-					return (temp);
-				}
 				// === DELETE ===
-				node* delete_node(node* root, const key_type& k)
+				node_ptr delete_node(node_ptr root, const key_type& k)
 				{
 					if (root == NULL)
 						return (root);
-					// this->btree_display(root, 0);
-					// std::cout << "delete_node" << std::endl;
-					if (_comp(k, root->value.first))
+
+					if (_comp(k, (root)->value.first))
 						root->left = delete_node(root->left, k);
 					else if (_comp(root->value.first, k))
 						root->right = delete_node(root->right, k);
-					
+
 					else // Ici on a trouvé la node a delete car K est ni inferieur ni superieur
 					{
 						if (root->right == NULL && root->left == NULL)	// Si c'est une feuille
 						{
 							_alloc.destroy(root);
-							_alloc.deallocate(root, 1);
+							root = NULL;
 							return NULL;
 						}
 						else if (root->left == NULL)		// Si il a qu'un seul enfant right
 						{
-							node*	temp = root->right;
+							node_ptr	temp = root->right;
 							_alloc.destroy(root);
-							_alloc.deallocate(root, 1);
+							root = NULL;
 							return (temp);
 						}
 						else if (root->right == NULL)		// Si il a qu'un seul enfant left
 						{
-							node*	temp = root->left;
+							node_ptr	temp = root->left;
 							_alloc.destroy(root);
-							_alloc.deallocate(root, 1);
+							root = NULL;
 							return (temp);
 						}
-						node*	temp		= get_inorder_successor(root->right);	// si la node a deux enfants prendre le inorder successor de root
-						
-						node*	tempright	= root->right;
-						node*	templeft	= root->left;
-						node*	tempparent	= root->parent;
-						
-						_alloc.destroy(root);
-						_alloc.construct(root, temp->value);
-						root->right		= tempright;
-						root->left		= templeft;
-						root->parent	= tempparent;
-						
-						root->right	= delete_node(root->right, temp->value.first);
+						else if (root->right && root->left)
+						{
+							node_ptr	temp		= _get_inorder_successor(root->right);	// si la node a deux enfants prendre le inorder successor de root
+
+							node_ptr	tempright	= root->right;
+							node_ptr	templeft	= root->left;
+							node_ptr	tempparent	= root->parent;
+
+							_alloc.destroy(root);
+
+							_alloc.construct(root, temp->value);
+							root->right		= tempright;
+							root->left		= templeft;
+							root->parent	= tempparent;
+
+							root->right	= delete_node(root->right, temp->value.first);
+						}
 					}
 					return (root);
 				}
@@ -193,6 +197,7 @@ namespace ft {
 				{
 					if (root == NULL)
 						return (0);
+					
 					return (size((root->left)) + 1 + size((root->right)));
 				}
 
