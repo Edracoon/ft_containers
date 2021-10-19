@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/19 17:38:45 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/19 19:52:14 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,8 +247,11 @@ namespace ft
 					this->erase(position->first);
 				}
 				size_type erase (const key_type& k) {
+					// size_type ret = _tree.btree_find_pair(_tree._root, k) == NULL ? 0 : 1;
+					// _tree._root = _tree.delete_node(_tree._root, k);
+					// return (ret);
 					size_type ret = _tree.btree_find_pair(_tree._root, k) == NULL ? 0 : 1;
-					_tree._root = _tree.delete_node(_tree._root, k);
+					_tree._root = _tree.delete_node_test(_tree._root, k);
 					return (ret);
 				}
 				void erase (iterator first, iterator last) {

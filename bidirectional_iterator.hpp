@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/19 17:19:41 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/19 18:38:03 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,26 +84,20 @@ namespace ft
 				// ++
 				bidirectional_iterator&	operator++() {
 					if (_curr_node == _last)
-					{
-						// std::cout << "hello -0.5-\n";
 						_curr_node = _curr_node->NIL;
-					}
 					else if (_curr_node != _curr_node->NIL && _curr_node->right != _curr_node->NIL)
 					{
-						// std::cout << "hello -1-\n";
 						_curr_node = _curr_node->right;
-						while (_curr_node->left->NIL)
+						while (_curr_node->left != _curr_node->NIL && _curr_node->left != nullptr)
 							_curr_node = _curr_node->left;
-						// std::cout << "hello -2-\n";
 					}
 					else
 					{
-						while (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->right)
+						while (_curr_node != _curr_node->NIL && _curr_node == _curr_node->parent->right)
 							_curr_node = _curr_node->parent;
-						// std::cout << "hello -4-\n";
 						_curr_node = _curr_node->parent;
 					}
-					return *this;
+					return (*this);
 				}
 				bidirectional_iterator	operator++(int) {
 					bidirectional_iterator	temp = *this;
@@ -113,7 +107,7 @@ namespace ft
 
 				// --
 				bidirectional_iterator&	operator--() {
-					if (_curr_node->NIL == NULL)
+					if (_curr_node == _curr_node->NIL || _curr_node->NIL == NULL)
 					{
 						_curr_node = _last;
 						return *this;
@@ -204,28 +198,21 @@ namespace ft
 
 				// ++
 				const_bidirectional_iterator&	operator++() {
-					if (_curr_node == _curr_node->NIL)
-						return *this;
 					if (_curr_node == _last)
 						_curr_node = _curr_node->NIL;
 					else if (_curr_node != _curr_node->NIL && _curr_node->right != _curr_node->NIL)
 					{
 						_curr_node = _curr_node->right;
-						while (_curr_node->left != _curr_node->NIL) {
-							// std::cout << "ope++ : " << _curr_node << " - " << _curr_node->NIL << std::endl;
+						while (_curr_node->left != _curr_node->NIL && _curr_node->left != nullptr)
 							_curr_node = _curr_node->left;
-						}
-					}
-					else if (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->left) {
-						_curr_node = _curr_node->parent;
 					}
 					else
 					{
-						while (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->right)
+						while (_curr_node != _curr_node->NIL && _curr_node == _curr_node->parent->right)
 							_curr_node = _curr_node->parent;
 						_curr_node = _curr_node->parent;
 					}
-					return *this;
+					return (*this);
 				}
 				const_bidirectional_iterator	operator++(int) {
 					const_bidirectional_iterator	temp = *this;
@@ -246,7 +233,8 @@ namespace ft
 						while (_curr_node->right != _curr_node->NIL)
 							_curr_node = _curr_node->right;
 					}
-					else {
+					else
+					{
 						while (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->left)
 							_curr_node = _curr_node->parent;
 						_curr_node = _curr_node->parent;

@@ -12,16 +12,11 @@ int		main(void)
 	for (unsigned int i = 0; i < lst_size; ++i)
 		lst.push_back(T3(lst_size - i, i));
 
-	std::cout << "here1" << std::endl;
 	TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
-	std::cout << "here2" << std::endl;
 	TESTED_NAMESPACE::map<T1, T2>::iterator it = mp.begin(), ite = mp.end();
-	std::cout << "here3" << std::endl;
 	TESTED_NAMESPACE::map<T1, T2> mp_range(it, --(--ite));
-	std::cout << "here6" << std::endl;
 	for (int i = 0; it != ite; ++it)
 		it->second = ++i * 5;
-	std::cout << "here4" << std::endl;
 
 	it = mp.begin(); ite = --(--mp.end());
 	TESTED_NAMESPACE::map<T1, T2> mp_copy(mp);
