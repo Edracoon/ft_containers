@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 19:59:34 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/19 17:19:41 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,23 +83,24 @@ namespace ft
 
 				// ++
 				bidirectional_iterator&	operator++() {
-					if (_curr_node == _curr_node->NIL)
-						return *this;
 					if (_curr_node == _last)
+					{
+						// std::cout << "hello -0.5-\n";
 						_curr_node = _curr_node->NIL;
+					}
 					else if (_curr_node != _curr_node->NIL && _curr_node->right != _curr_node->NIL)
 					{
+						// std::cout << "hello -1-\n";
 						_curr_node = _curr_node->right;
-						while (_curr_node->left != _curr_node->NIL)
+						while (_curr_node->left->NIL)
 							_curr_node = _curr_node->left;
-					}
-					else if (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->left) {
-						_curr_node = _curr_node->parent;
+						// std::cout << "hello -2-\n";
 					}
 					else
 					{
 						while (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->right)
 							_curr_node = _curr_node->parent;
+						// std::cout << "hello -4-\n";
 						_curr_node = _curr_node->parent;
 					}
 					return *this;
@@ -112,7 +113,7 @@ namespace ft
 
 				// --
 				bidirectional_iterator&	operator--() {
-					if (_curr_node == _curr_node->NIL)
+					if (_curr_node->NIL == NULL)
 					{
 						_curr_node = _last;
 						return *this;
@@ -120,15 +121,15 @@ namespace ft
 					if (_curr_node->left != _curr_node->NIL)
 					{
 						_curr_node = _curr_node->left;
-						// std::cout << _curr_node << std::endl;
 						while (_curr_node != _curr_node->NIL && _curr_node->right != _curr_node->NIL) {
 							_curr_node = _curr_node->right;
 						}
 					}
 					else
 					{
-						while (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->left)
+						while (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->left) {
 							_curr_node = _curr_node->parent;
+						}
 						_curr_node = _curr_node->parent;
 					}
 					return *this;
@@ -210,8 +211,10 @@ namespace ft
 					else if (_curr_node != _curr_node->NIL && _curr_node->right != _curr_node->NIL)
 					{
 						_curr_node = _curr_node->right;
-						while (_curr_node->left != _curr_node->NIL)
+						while (_curr_node->left != _curr_node->NIL) {
+							// std::cout << "ope++ : " << _curr_node << " - " << _curr_node->NIL << std::endl;
 							_curr_node = _curr_node->left;
+						}
 					}
 					else if (_curr_node->parent != _curr_node->NIL && _curr_node == _curr_node->parent->left) {
 						_curr_node = _curr_node->parent;
@@ -232,7 +235,7 @@ namespace ft
 
 				// --
 				const_bidirectional_iterator&	operator--() {
-					if (_curr_node == _curr_node->NIL)
+					if (_curr_node->NIL == NULL)
 					{
 						_curr_node = _last;
 						return *this;

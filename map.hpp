@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 19:44:16 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/19 17:38:45 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,9 +122,9 @@ namespace ft
 					// Swap the tree roots
 					btree_type		temp_tree	= btree_type();
 
-					temp_tree._root = this->_tree._root;
-					this->_tree._root = x._tree._root;
-					x._tree._root = temp_tree._root;
+					temp_tree = this->_tree;
+					this->_tree = x._tree;
+					x._tree = temp_tree;
 
 				}
 
@@ -173,8 +173,7 @@ namespace ft
 				void clear() {
 					if (this->empty() == false)
 					{
-						_tree.btree_clear(_tree._root);
-						_tree._root = NULL;
+						_tree.btree_clear();
 					}
 				}
 
@@ -182,14 +181,14 @@ namespace ft
 				// === SIZE ===
 				// ============
 				size_type size() const {
-					return (_tree.size((_tree._root)));
+					return (_tree.size(_tree._root));
 				}
 
 				// =============
 				// === EMPTY ===
 				// =============
 				bool empty() const {
-					return (!_tree.size((_tree._root)));
+					return (!_tree.size(_tree._root));
 				}
 
 				// ================
@@ -213,7 +212,7 @@ namespace ft
 				// === COUNT ===
 				// =============
 				size_type count (const key_type& k) const {
-					return (_tree.btree_find_node(_tree._root, k) != NULL ? 1 : 0);
+					return (_tree.btree_find_node(_tree._root, k) != _tree.NIL ? 1 : 0);
 				}
 
 				// ==============

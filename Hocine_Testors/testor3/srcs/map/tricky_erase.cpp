@@ -56,7 +56,6 @@ int		main(void)
 	mp[90] = "8";
 
 	printSize(mp);
-
 	/* A classic btree should give this:
 	 *                                      42
 	 *                     /                                            \

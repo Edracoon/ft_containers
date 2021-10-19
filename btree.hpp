@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/18 20:12:09 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/19 17:41:34 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ namespace ft {
 				typedef	ft::reverse_iterator<iterator>						reverse_iterator;
 				typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 		public:
+				size_type					_size;
 				value_compare				_comp;
 				allocator_type				_alloc;
 				node_ptr					_root;
@@ -55,13 +56,17 @@ namespace ft {
 					NIL = _alloc.allocate(1);
 					_alloc.construct(NIL, value_type());
 					NIL->color	= BLACK;
-					_root = NIL;
+					NIL->NIL	= NULL;
+					_root		= NIL;
+					_size		= 0;
 				}
 				btree(value_compare	comp) : _comp(comp), _alloc(allocator_type()), _root(NULL) {
 					NIL = _alloc.allocate(1);
 					_alloc.construct(NIL, value_type());
 					NIL->color	= BLACK;
-					_root = NIL;
+					NIL->NIL	= NULL;
+					_root		=	NIL;
+					_size		= 0;
 				}
 				template <class InputIterator>
 				btree(InputIterator first, InputIterator last, value_compare comp, allocator_type alloc)
@@ -69,9 +74,15 @@ namespace ft {
 					NIL = _alloc.allocate(1);
 					_alloc.construct(NIL, value_type());
 					NIL->color	= BLACK;
-					_root = NIL;
-					for ( ; first != last ; first++)
+					NIL->NIL	= NULL;
+					_root		= NIL;
+					_size		= 0;
+					// std::cout << "copy construct tree123\n";
+					for ( ; first != last ; first++) {
+						// std::cout << "copy construct tree\n";
 						btree_insert(&_root, *first);
+						// btree_display(_root, 0);
+					}
 				}
 
 		private:
@@ -90,9 +101,9 @@ namespace ft {
 				// === UTILS === // 
 				node_ptr	_get_last() const {
 					node_ptr	temp = _root;
-					if (temp != NIL)
-						while (temp->right != NIL)
-							temp	= temp->right;
+					if (temp != temp->NIL)
+						while (temp->right != temp->NIL)
+							temp = temp->right;
 					return (temp);
 				}
 			
@@ -104,10 +115,106 @@ namespace ft {
 					return (temp);
 				}
 
+				// === RED-BLACK UTILS === //
+				void	_left_rotate(node_ptr	x) {	// LEFT ROTATE
+					node_ptr	y;
+
+					y = x->right;
+					x->right = y->left;
+					if (y->left != NIL)
+						y->left->parent = x;
+					y->parent = x->parent;
+					if (x->parent == NIL)
+						_root = y;
+					else if (x == x->parent->left)
+						x->parent->left = y;
+					else
+						x->parent->right = y;
+					y->left = x;
+					x->parent = y;
+				}
+				void	_right_rotate(node_ptr	x) {	// RIGHT ROTATE
+					node_ptr	y;
+
+					y = x->left;
+					x->left = y->right;
+					if (y->right != NULL)
+						y->right->parent = x;
+					y->parent = x->parent;
+					if (x->parent == NULL)
+						_root = y;
+					else if (x == x->parent->right)
+						x->parent->right = y;
+					else
+						x->parent->left = y;
+					y->right = x;
+					x->parent = y;
+				}
+
+				node_ptr insert_fixup(node_ptr z)
+				{
+					node_ptr	temp = z;	// Stock z pour pouvoir le return dans mon iterator
+					node_ptr	y;
+
+					while(z->parent->color == RED)
+					{
+						if(z->parent == z->parent->parent->left) // z.parent is the left child
+						{
+							
+							y = z->parent->parent->right; //uncle of z
+
+							if(y->color == RED) //case 1
+							{
+								z->parent->color = BLACK;
+								y->color = BLACK;
+								z->parent->parent->color = RED;
+								z = z->parent->parent;
+							}
+							else //case2 or case3
+							{
+								if(z == z->parent->right) //case2
+								{
+									z = z->parent; //marked z.parent as new z
+									_left_rotate(z);
+								}
+								//case3
+								z->parent->color = BLACK; //made parent BLACK
+								z->parent->parent->color = RED; //made parent red
+								_right_rotate(z->parent->parent);
+							}
+						}
+						else //z.parent is the right child
+						{
+							y = z->parent->parent->left; //uncle of z
+
+							if(y->color == RED)
+							{
+								z->parent->color = BLACK;
+								y->color = BLACK;
+								z->parent->parent->color = RED;
+								z = z->parent->parent;
+							}
+							else
+							{
+								if(z == z->parent->left)
+								{
+									z = z->parent; //marked z.parent as new z
+									_right_rotate(z);
+								}
+								z->parent->color = BLACK; //made parent BLACK
+								z->parent->parent->color = RED; //made parent red
+								_left_rotate(z->parent->parent);
+							}
+						}
+					}
+					_root->color = BLACK;
+					return temp;
+				}
 		public:
 				iterator	begin() {
 					node_ptr	temp = _root;
-					if (_root != NIL) {
+					if (_root != NIL)
+					{
 						while (temp->left != NIL)
 							temp = temp->left;
 					}
@@ -115,10 +222,10 @@ namespace ft {
 				}
 				const_iterator	begin() const {
 					const_node_ptr	temp = reinterpret_cast<const_node_ptr>(_root);
-					if (_root != NIL) {
-						while (temp->left != reinterpret_cast<const_node_ptr>(NIL))
-							temp = temp->left;
-					}
+					if (temp == reinterpret_cast<const_node_ptr>(NIL))
+						return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_get_last())));
+					while (temp->left != reinterpret_cast<const_node_ptr>(temp->NIL))
+						temp = temp->left;
 					return (const_iterator(temp, reinterpret_cast<const_node_ptr>(_get_last())));
 				}
 
@@ -142,10 +249,11 @@ namespace ft {
 					{
 						*root = _alloc.allocate(1);
 						_alloc.construct(*root, value);
-						(*root)->color	= BLACK;
-						(*root)->parent = NIL;
-						(*root)->left	= NIL;
-						(*root)->right	= NIL;
+						(*root)->color		= BLACK;
+						(*root)->parent 	= NIL;
+						(*root)->left		= NIL;
+						(*root)->right		= NIL;
+						(*root)->NIL		= NIL;
 						return iterator(*root, NIL);
 					}
 					while ((*root) != NIL)
@@ -157,13 +265,15 @@ namespace ft {
 						if ((*root)->left == NIL && !(_comp((*root)->value.first, value.first)))
 						{
 							create_new_node(&((*root)->left), root, value);
-							return iterator((*root)->left, NIL);
+							_size += 1;
+							return iterator(insert_fixup((*root)->left), NIL);
 						}
 						// right insert
 						if ((*root)->right == NIL && (_comp((*root)->value.first, value.first)))
 						{
 							create_new_node(&((*root)->right), root, value);
-							return iterator((*root)->right, NIL);
+							_size += 1;
+							return iterator(insert_fixup((*root)->right), NIL);
 						}
 						if (_comp((*root)->value.first, value.first))
 							root = &((*root)->right);
@@ -173,7 +283,7 @@ namespace ft {
 					return iterator(NIL, NIL);
 				}
 
-				// === DELETE ===
+				// === DELETE === //
 				node_ptr delete_node(node_ptr root, const key_type& k)
 				{
 					if (root == NIL)
@@ -188,6 +298,7 @@ namespace ft {
 					{
 						if (root->right == NIL && root->left == NIL)	// Si c'est une feuille
 						{
+							// _size -= 1;
 							_alloc.destroy(root);
 							root = NIL;
 							return NIL;
@@ -195,6 +306,7 @@ namespace ft {
 						else if (root->left == NIL)		// Si il a qu'un seul enfant right
 						{
 							node_ptr	temp = root->right;
+							// _size -= 1;
 							_alloc.destroy(root);
 							root = NIL;
 							return (temp);
@@ -202,6 +314,7 @@ namespace ft {
 						else if (root->right == NIL)		// Si il a qu'un seul enfant left
 						{
 							node_ptr	temp = root->left;
+							// _size -= 1;
 							_alloc.destroy(root);
 							root = NIL;
 							return (temp);
@@ -209,19 +322,17 @@ namespace ft {
 						else if (root->right != NIL && root->left != NIL)
 						{
 							node_ptr	temp		= _get_inorder_successor(root->right);	// si la node a deux enfants prendre le inorder successor de root
-
 							node_ptr	tempright	= root->right;
 							node_ptr	templeft	= root->left;
 							node_ptr	tempparent	= root->parent;
 
 							_alloc.destroy(root);
-							root = NIL;
-
 							_alloc.construct(root, temp->value);
 							root->right		= tempright;
 							root->left		= templeft;
 							root->parent	= tempparent;
 							root->NIL		= NIL;
+							root->NIL->NIL	= NIL;
 
 							root->right	= delete_node(root->right, temp->value.first);
 						}
@@ -232,33 +343,30 @@ namespace ft {
 				// === SIZE ===
 				int	size(node_ptr root) const
 				{
-					// std::cout << root << std::endl;
-					if (root == NIL)
+					if (root == NIL || root->NIL == NULL)
 						return (0);
 					
 					return (size((root->left)) + 1 + size((root->right)));
 				}
 
 				// === CLEAR === //
-				void	btree_clear(node *root)
+				void	btree_clear()
 				{
-					if (root == NIL)
-						return ;
+					// if (_root == NIL)
+					// 	return ;
 
-					btree_clear((root->left));
-					btree_clear((root->right));
-					if (root->left == NIL && root->right == NIL)
-					{
-						_alloc.destroy(root);
-						_alloc.deallocate(root, 1);
-						root = NIL;
-					}
+					// btree_clear((root->left));
+					// btree_clear((root->right));
+					_alloc.destroy(_root);
+					
+					_root = NIL;
 				}
 
 				// === FIND === //
 				T* btree_find_pair(node_ptr root, const key_type& k) const
 				{
 					T*	ret;
+					// std::cout << "here1" << std::endl;
 					if (root == NIL)
 						return (NULL);
 
@@ -302,7 +410,7 @@ namespace ft {
 					return ( (_comp(retleft, retright) == false ? retleft : retright) + 1 );
 				}
 
-				void	btree_display(node_ptr root, int space)
+				void	btree_display(node_ptr root, int space) const
 				{
 					int	i = 5;
 
@@ -312,7 +420,11 @@ namespace ft {
 					btree_display(root->right, space);
 					while (i++ < space)
 						std::cout << " ";
-					std::cout << root->value.first << " - " <<  root->value.second << std::endl;
+					std::cout << root->value.first << "(";
+					if (  root->color == 1 ) 
+						std::cout << "R)" << std::endl;
+					else if (  root->color == 0 ) 
+						std::cout << "B)" << std::endl;
 					btree_display(root->left, space);
 				}
 	};
