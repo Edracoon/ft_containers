@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 11:59:12 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 15:30:46 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,9 @@ namespace ft
 					// Swap the tree roots
 					btree_type		temp_tree	= btree_type();
 
-					temp_tree = this->_tree;
-					this->_tree = x._tree;
-					x._tree = temp_tree;
-
+					temp_tree	= this->_tree;
+					this->_tree	= x._tree;
+					x._tree		= temp_tree;
 				}
 
 				// ===================
@@ -181,14 +180,14 @@ namespace ft
 				// === SIZE ===
 				// ============
 				size_type size() const {
-					return (_tree.size(_tree._root));
+					return (_tree._size);
 				}
 
 				// =============
 				// === EMPTY ===
 				// =============
 				bool empty() const {
-					return (!_tree.size(_tree._root));
+					return (!_tree._size);
 				}
 
 				// ================
@@ -222,12 +221,11 @@ namespace ft
 					
 					bool		insertable	= _tree.btree_find_pair(_tree._root, val.first) == NULL ? true : false;
 					iterator	it = _tree.btree_insert(&(_tree._root), val);
-					
 					return ft::make_pair(it, insertable);
 				}
 				iterator insert (iterator position, const value_type& val) {
 					(void)position;
-
+					
 					this->insert(val);
 					iterator	ret = iterator(_tree.btree_find_node(_tree._root, val.first));
 					
@@ -235,7 +233,8 @@ namespace ft
 				}
 				template <class InputIterator>
 				void insert (InputIterator first, InputIterator last) {
-					for ( ; first != last ; first++) {
+					for ( ; first != last ; first++)
+					{
 						this->_tree.btree_insert(&(_tree._root), *first);
 					}
 				}
@@ -247,17 +246,16 @@ namespace ft
 					this->erase(position->first);
 				}
 				size_type erase (const key_type& k) {
-					// size_type ret = _tree.btree_find_pair(_tree._root, k) == NULL ? 0 : 1;
-					// _tree._root = _tree.delete_node(_tree._root, k);
-					// return (ret);
-					size_type ret = _tree.btree_find_pair(_tree._root, k) == NULL ? 0 : 1;
-					_tree._root = _tree.delete_node_test(k);
+					value_type*		verif	= _tree.btree_find_pair(_tree._root, k);
+					size_type		ret		= (verif == NULL ? 0 : 1);
+					if (verif != NULL) {
+						_tree._root = _tree.delete_node_tree(k);
+					}
 					return (ret);
 				}
 				void erase (iterator first, iterator last) {
-					for ( ; first != last ; first++) {
-						// std::cout << first->first << std::endl;
-						this->erase(first);
+					for ( ; first != last ; ) {
+						this->erase((first++)->first);
 					}
 				}
 

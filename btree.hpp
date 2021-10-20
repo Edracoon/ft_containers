@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 12:37:32 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 15:19:40 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,9 @@ namespace ft {
 					NIL->color	= BLACK;
 					NIL->NIL	= NULL;
 					_root		= NIL;
-					_size		= 0;
-					// std::cout << "copy construct tree123\n";
+					_size = 0;
 					for ( ; first != last ; first++) {
-						// std::cout << "copy construct tree\n";
-						btree_insert(&_root, *first);
-						// btree_display(_root, 0);
+							btree_insert(&_root, *first);
 					}
 				}
 
@@ -213,7 +210,7 @@ namespace ft {
 				}
 				void delete_fixup(node_ptr x)
 				{
-					node_ptr w;
+					node_ptr	w;
 					while(x != _root && x->color == BLACK)
 					{
 						if(x == x->parent->left)
@@ -320,9 +317,7 @@ namespace ft {
 
 				// === max_size === // 
 				size_type max_size( void ) const {
-					if (sizeof(node) == 1)
-						return (_alloc.max_size() / 2);
-					return (_alloc.max_size());
+					return (std::numeric_limits<size_type>::max() / (sizeof(node) - sizeof(node_ptr)));
 				}
 				// === INSERT === //
 				iterator btree_insert(node_ptr *root, const T& value)
@@ -336,6 +331,7 @@ namespace ft {
 						(*root)->left		= NIL;
 						(*root)->right		= NIL;
 						(*root)->NIL		= NIL;
+						_size				+= 1;
 						return iterator(*root, NIL);
 					}
 					while ((*root) != NIL)
@@ -347,14 +343,14 @@ namespace ft {
 						if ((*root)->left == NIL && !(_comp((*root)->value.first, value.first)))
 						{
 							create_new_node(&((*root)->left), root, value);
-							_size += 1;
+							_size		+= 1;
 							return iterator(insert_fixup((*root)->left), NIL);
 						}
 						// right insert
 						if ((*root)->right == NIL && (_comp((*root)->value.first, value.first)))
 						{
 							create_new_node(&((*root)->right), root, value);
-							_size += 1;
+							_size		+= 1;
 							return iterator(insert_fixup((*root)->right), NIL);
 						}
 						if (_comp((*root)->value.first, value.first))
@@ -366,70 +362,7 @@ namespace ft {
 				}
 
 				// // === DELETE === //
-				// node_ptr delete_node(node_ptr root, const key_type& k)
-				// {
-				// 	if (root == NIL)
-				// 		return (root);
-
-				// 	if (_comp(k, (root)->value.first))
-				// 		root->left = delete_node(root->left, k);
-				// 	else if (_comp(root->value.first, k))
-				// 		root->right = delete_node(root->right, k);
-
-				// 	else // Ici on a trouvé la node a delete car K est ni inferieur ni superieur
-				// 	{
-				// 		// bool	original_color	= root->color;
-				// 		if (root->right == NIL && root->left == NIL)	// Si c'est une feuille
-				// 		{
-				// 			// _size -= 1;
-				// 			_alloc.destroy(root);
-				// 			root = NIL;
-				// 			return NIL;
-				// 		}
-				// 		else if (root->left == NIL)		// Si il a qu'un seul enfant right
-				// 		{
-				// 			node_ptr	temp = root->right;
-				// 			// _size -= 1;
-				// 			_alloc.destroy(root);
-				// 			root = NIL;
-				// 			return (temp);
-				// 		}
-				// 		else if (root->right == NIL)		// Si il a qu'un seul enfant left
-				// 		{
-				// 			node_ptr	temp = root->left;
-				// 			// _size -= 1;
-				// 			_alloc.destroy(root);
-				// 			root = NIL;
-							
-				// 			return (temp);
-				// 		}
-				// 		else if (root->right != NIL && root->left != NIL)
-				// 		{
-				// 			node_ptr	temp		= _get_inorder_successor(root->right);	// si la node a deux enfants prendre le inorder successor de root
-				// 			node_ptr	tempright	= root->right;
-				// 			node_ptr	templeft	= root->left;
-				// 			node_ptr	tempparent	= root->parent;
-				// 			bool		colortemp	= root->color;
-
-				// 			_alloc.destroy(root);
-				// 			_alloc.construct(root, temp->value);
-				// 			root->right		= tempright;
-				// 			root->left		= templeft;
-				// 			root->parent	= tempparent;
-				// 			root->NIL		= NIL;
-				// 			root->color		= colortemp;
-				// 			// root->NIL->NIL	= NIL;
-
-				// 			root->right	= delete_node(root->right, temp->value.first);
-				// 			// if (original_color == BLACK)
-				// 			// 	delete_fixup(root->right);
-				// 		}
-				// 	}
-				// 	return (root);
-				// }
-
-				// DELETE TEMPORAIRE POUR TESTER
-				void delete_node(node_ptr z)
+				void delete_node_RB_algo(node_ptr z)
 				{
 					node_ptr y = z;
 					node_ptr x;
@@ -450,7 +383,7 @@ namespace ft {
 						y_orignal_color = y->color;
 						x = y->right;
 						if(y->parent == z) {
-							x->parent = z;
+							x->parent = y;
 						}
 						else
 						{
@@ -463,44 +396,31 @@ namespace ft {
 						y->left->parent = y;
 						y->color = z->color;
 					}
-					// if (y_orignal_color == BLACK)
-					// 	delete_fixup(x);
+					if (y_orignal_color == BLACK)
+						delete_fixup(x);
 				}
-				node_ptr	delete_node_test(const key_type& k)
+				node_ptr	delete_node_tree(const key_type& k)
 				{
 					node_ptr temp = this->btree_find_node(_root, k);
-					if (temp != NIL)
-						delete_node(temp);
+					if (temp != NIL) {
+						_size		-= 1;
+						delete_node_RB_algo(temp);
+					}
 					return (_root);
-				}
-
-				// === SIZE ===
-				int	size(node_ptr root) const
-				{
-					if (root == NIL || root->NIL == NULL)
-						return (0);
-					
-					return (size((root->left)) + 1 + size((root->right)));
 				}
 
 				// === CLEAR === //
 				void	btree_clear()
 				{
-					// if (_root == NIL)
-					// 	return ;
-
-					// btree_clear((root->left));
-					// btree_clear((root->right));
 					_alloc.destroy(_root);
-					
-					_root = NIL;
+					_size	= 0;
+					_root	= NIL;
 				}
 
 				// === FIND === //
 				T* btree_find_pair(node_ptr root, const key_type& k) const
 				{
 					T*	ret;
-					// std::cout << "here1" << std::endl;
 					if (root == NIL)
 						return (NULL);
 
