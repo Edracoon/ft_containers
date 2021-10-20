@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 15:48:29 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 20:26:06 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <iostream>
 # include <memory>
 # include "iterator.hpp"
-# include "btree.hpp"
+# include "map_RBtree.hpp"
 # include "pair.hpp"
 # include "utils.hpp"
 
@@ -46,7 +46,7 @@ namespace ft
 				typedef	typename allocator_type::difference_type			difference_type;	// usually ptrdiff_t
 
 		protected:
-				typedef	btree<value_type, key_compare, allocator_type>		btree_type;
+				typedef	map_rbtree<value_type, key_compare, allocator_type>		btree_type;
 		public:
 				// BIDIRECTIONAL ITERATOR
 				typedef	typename btree_type::iterator						iterator;
@@ -85,7 +85,7 @@ namespace ft
 
 		public:
 				// == DEFAULT ==
-				explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(btree_type(comp))
+				explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree()
 				{
 					_alloc			= alloc;
 					_comp			= comp;
@@ -98,7 +98,7 @@ namespace ft
 				{
 					_comp			= comp;
 					_alloc			= alloc;
-					_tree			= btree_type(first, last, comp, alloc);
+					this->insert(first, last);
 				}
 
 				// === COPY ===
@@ -109,15 +109,14 @@ namespace ft
 					*this	= x;
 				}
 
-				~map() {}
+				~map() {
+					_tree._alloc.destroy(_tree.NIL);
+					_tree._alloc.deallocate(_tree.NIL, 1);
+				}
 
 				// === SWAP ===
 				void swap (map& x) {
-					btree_type		temp_tree	= btree_type();
-
-					temp_tree	= this->_tree;
-					this->_tree	= x._tree;
-					x._tree		= temp_tree;
+					_tree.btree_swap(x._tree);
 				}
 
 				// === BEGIN | END ===
@@ -159,10 +158,7 @@ namespace ft
 				
 				// === CLEAR ===
 				void clear() {
-					if (this->empty() == false)
-					{
-						_tree.btree_clear();
-					}
+					_tree.btree_clear(_tree._root);
 				}
 
 				// === SIZE ===
