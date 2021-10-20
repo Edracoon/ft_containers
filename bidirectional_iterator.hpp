@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 12:37:12 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 15:47:43 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include "reverse_iterator.hpp"
 # include "iterator_traits.hpp"
 # include "node.hpp"
-// # include "map.hpp"
-// # include "btree.hpp"
-// class btree ;
 
 namespace ft
 {
@@ -28,11 +25,8 @@ namespace ft
 	template< typename T >
 	class bidirectional_iterator
 	{
-		private:
-				// recup traits macro
-				// typedef iterator_traits<T> it;
 		public:
-				// typedef macro	// T = PAIR
+				// typedef macro
 				typedef T											value_type;
 				typedef value_type*											pointer;
 				typedef value_type&											reference;
@@ -142,11 +136,8 @@ namespace ft
 	template< typename T >
 	class const_bidirectional_iterator
 	{
-		private:
-				// recup traits macro
-				// typedef iterator_traits<T> it;
 		public:
-				// typedef macro	// T = PAIR
+				// typedef macro
 				typedef const T										value_type;
 				typedef value_type*									pointer;
 				typedef value_type&									reference;
@@ -249,7 +240,7 @@ namespace ft
 				}
 	};
 
-	// OUT OF CLASS COMPARISON
+	// === OUT OF CLASS COMPARISON ===
 	template <class Iterator1, class Iterator2>
 	bool operator== (const ft::const_bidirectional_iterator<Iterator1>& lhs,	
 				const ft::const_bidirectional_iterator<Iterator2>& rhs) {

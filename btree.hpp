@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 15:19:40 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 16:07:12 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,7 +417,7 @@ namespace ft {
 					_root	= NIL;
 				}
 
-				// === FIND === //
+				// === FIND PAIR === //
 				T* btree_find_pair(node_ptr root, const key_type& k) const
 				{
 					T*	ret;
@@ -432,6 +432,7 @@ namespace ft {
 					return (ret);
 				}
 				
+				// == FIND NODE === //
 				node_ptr btree_find_node(node_ptr root, const key_type& k) const
 				{
 					node_ptr	ret;
@@ -445,9 +446,6 @@ namespace ft {
 						ret = btree_find_node(root->right, k);
 					return (ret);
 				}
-
-				// delete => trouver la valeur a delete puis aller dans le subtree de gauche et chercher la plus grande valeure
-				// 			puis la mettre a la place de la node deleted
 
 				// === LEVEL COUNT === //
 				int btree_level_count(node_ptr root)

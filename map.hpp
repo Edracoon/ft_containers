@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 15:30:46 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 15:48:29 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,18 +84,14 @@ namespace ft
 
 
 		public:
-				// =============
 				// == DEFAULT ==
-				// =============
 				explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(btree_type(comp))
 				{
 					_alloc			= alloc;
 					_comp			= comp;
 				}
 
-				// =============
 				// === RANGE ===
-				// =============
 				template <class InputIterator>
 				map (InputIterator first, InputIterator last,
 					const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
@@ -105,9 +101,7 @@ namespace ft
 					_tree			= btree_type(first, last, comp, alloc);
 				}
 
-				// ============
 				// === COPY ===
-				// ============
 				map (const map& x)
 				{
 					_alloc	= x._alloc;
@@ -119,7 +113,6 @@ namespace ft
 
 				// === SWAP ===
 				void swap (map& x) {
-					// Swap the tree roots
 					btree_type		temp_tree	= btree_type();
 
 					temp_tree	= this->_tree;
@@ -127,9 +120,7 @@ namespace ft
 					x._tree		= temp_tree;
 				}
 
-				// ===================
 				// === BEGIN | END ===
-				// ===================
 				iterator begin() {
 					return iterator(_tree.begin());
 				}
@@ -166,9 +157,7 @@ namespace ft
 					return value_compare(_comp);
 				}
 				
-				// =============
 				// === CLEAR ===
-				// =============
 				void clear() {
 					if (this->empty() == false)
 					{
@@ -176,30 +165,22 @@ namespace ft
 					}
 				}
 
-				// ============
 				// === SIZE ===
-				// ============
 				size_type size() const {
 					return (_tree._size);
 				}
 
-				// =============
 				// === EMPTY ===
-				// =============
 				bool empty() const {
 					return (!_tree._size);
 				}
 
-				// ================
 				// === MAX_SIZE ===
-				// ================
 				size_type max_size( void ) const {
 					return (_tree.max_size());
 				}
 
-				// ============
 				// === FIND ===
-				// ============
 				iterator find (const key_type& k) {
 					return iterator(_tree.btree_find_node(_tree._root, k));
 				}
@@ -207,22 +188,20 @@ namespace ft
 					return const_iterator(reinterpret_cast<typename btree_type::const_node_ptr>(_tree.btree_find_node(_tree._root, k)));
 				}
 
-				// =============
 				// === COUNT ===
-				// =============
 				size_type count (const key_type& k) const {
 					return (_tree.btree_find_node(_tree._root, k) != _tree.NIL ? 1 : 0);
 				}
 
-				// ==============
-				// === INSERT ===
-				// ==============
+				// === INSERT 1 ===
 				pair<iterator, bool> insert (const value_type& val) {
 					
 					bool		insertable	= _tree.btree_find_pair(_tree._root, val.first) == NULL ? true : false;
 					iterator	it = _tree.btree_insert(&(_tree._root), val);
 					return ft::make_pair(it, insertable);
 				}
+
+				// === INSERT 2 ===
 				iterator insert (iterator position, const value_type& val) {
 					(void)position;
 					
@@ -231,6 +210,8 @@ namespace ft
 					
 					return (ret);
 				}
+
+				// === INSERT 3 ===
 				template <class InputIterator>
 				void insert (InputIterator first, InputIterator last) {
 					for ( ; first != last ; first++)
@@ -239,12 +220,12 @@ namespace ft
 					}
 				}
 
-				// =============
-				// === ERASE ===
-				// =============
+				// === ERASE 1 ===
 				void erase (iterator position) {
 					this->erase(position->first);
 				}
+
+				// === ERASE 2 ===
 				size_type erase (const key_type& k) {
 					value_type*		verif	= _tree.btree_find_pair(_tree._root, k);
 					size_type		ret		= (verif == NULL ? 0 : 1);
@@ -253,15 +234,15 @@ namespace ft
 					}
 					return (ret);
 				}
+
+				// === ERASE 3 ===
 				void erase (iterator first, iterator last) {
 					for ( ; first != last ; ) {
 						this->erase((first++)->first);
 					}
 				}
 
-				// ===================
 				// === LOWER_BOUND ===
-				// ===================
 				iterator lower_bound (const key_type& k) {
 					iterator	it	= this->begin();
 					iterator	ite	= this->end();
@@ -281,9 +262,7 @@ namespace ft
 					return (it);
 				}
 
-				// ===================
 				// === UPPER_BOUND ===
-				// ===================
 				iterator upper_bound (const key_type& k) {
 					iterator	it	= this->begin();
 					iterator	ite	= this->end();
@@ -303,9 +282,7 @@ namespace ft
 					return (it);
 				}
 
-				// ===================
 				// === EQUAL_RANGE ===
-				// ===================
 				pair<iterator,iterator>				equal_range (const key_type& k) {
 					return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
 				}
@@ -320,18 +297,15 @@ namespace ft
 
 				map& operator= (const map& x)
 				{
-					this->clear();
-					this->insert(x.begin(), x.end());
+					if (this != &x)
+					{
+						this->clear();
+						this->insert(x.begin(), x.end());
+					}
 					return *this;
 				}
-	
-				// PENSER A SUPPRIMER
-				void	print_tree(void)
-				{
-					_tree.btree_display(_tree._root, 0);
-				}
 	};
-	// NON MEMBER SWAP
+	// === NON MEMBER SWAP ===
 	template <class Key, class T, class Compare, class Alloc>
 	void swap (map<Key, T, Compare, Alloc>& x, map<Key, T, Compare, Alloc>& y) {
 		x.swap(y);
@@ -374,8 +348,6 @@ namespace ft
 						const ft::map<Key,T,Compare,Alloc>& rhs ){
 		return !(lhs < rhs);
 	}
-
-
 }
 
 
