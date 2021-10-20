@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/19 20:17:19 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 12:37:32 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,7 @@ namespace ft {
 			
 				node_ptr	_get_inorder_successor(node_ptr right) const {
 					node_ptr	temp = right;
-					std::cout << "g_i_s : " << right << std::endl;
-					while (temp != temp->NIL && temp->left != temp->NIL) {
+					while (temp->left != temp->NIL) {
 						temp = temp->left;
 					}
 					return (temp);
@@ -214,11 +213,12 @@ namespace ft {
 				}
 				void delete_fixup(node_ptr x)
 				{
+					node_ptr w;
 					while(x != _root && x->color == BLACK)
 					{
 						if(x == x->parent->left)
 						{
-							node_ptr w = x->parent->right;
+							w = x->parent->right;
 							if(w->color == RED)
 							{
 								w->color = BLACK;
@@ -249,7 +249,7 @@ namespace ft {
 						}
 						else
 						{
-							node_ptr w = x->parent->left;
+							w = x->parent->left;
 							if(w->color == RED)
 							{
 								w->color = BLACK;
@@ -365,7 +365,7 @@ namespace ft {
 					return iterator(NIL, NIL);
 				}
 
-				// === DELETE === //
+				// // === DELETE === //
 				// node_ptr delete_node(node_ptr root, const key_type& k)
 				// {
 				// 	if (root == NIL)
@@ -446,7 +446,6 @@ namespace ft {
 					}
 					else
 					{
-						
 						y = _get_inorder_successor(z->right);
 						y_orignal_color = y->color;
 						x = y->right;
@@ -464,14 +463,17 @@ namespace ft {
 						y->left->parent = y;
 						y->color = z->color;
 					}
-					if(y_orignal_color == BLACK)
-						delete_fixup(x);
+					// if (y_orignal_color == BLACK)
+					// 	delete_fixup(x);
 				}
-				node_ptr	delete_node_test(node_ptr root, const key_type& k)
+				node_ptr	delete_node_test(const key_type& k)
 				{
-					delete_node(this->btree_find_node(root, k));
+					node_ptr temp = this->btree_find_node(_root, k);
+					if (temp != NIL)
+						delete_node(temp);
 					return (_root);
 				}
+
 				// === SIZE ===
 				int	size(node_ptr root) const
 				{

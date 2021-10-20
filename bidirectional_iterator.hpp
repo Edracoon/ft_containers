@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/19 18:38:03 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 12:37:12 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ namespace ft
 				}
 
 				// ++
-				bidirectional_iterator&	operator++() {
+				bidirectional_iterator&	operator++()
+				{
 					if (_curr_node == _last)
 						_curr_node = _curr_node->NIL;
 					else if (_curr_node != _curr_node->NIL && _curr_node->right != _curr_node->NIL)
