@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:53:59 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 19:01:32 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 20:38:43 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ namespace ft
 		
 		public:
 				// == DEFAULT ==
-				explicit set (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(btree_type(comp))
+				explicit set (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree()
 				{
 					_alloc			= alloc;
 					_comp			= comp;
@@ -89,7 +89,8 @@ namespace ft
 				{
 					_comp			= comp;
 					_alloc			= alloc;
-					_tree			= btree_type(first, last, comp, alloc);
+					this->insert(first, last);
+					// _tree			= btree_type(first, last, comp, alloc);
 				}
 
 				// === COPY ===
@@ -100,19 +101,14 @@ namespace ft
 					*this	= x;
 				}
 
-				~set() {}
+				~set() {
+					_tree._alloc.destroy(_tree.NIL);
+					_tree._alloc.deallocate(_tree.NIL, 1);
+				}
 
 				// === SWAP ===
-				void swap (set& x)
-				{
+				void swap (set& x) {
 					_tree.btree_swap(x._tree);
-					// btree_type		temp_tree	= btree_type();
-
-					// temp_tree	= this->_tree;
-					// this->_tree	= x._tree;
-					// x._tree		= temp_tree;
-
-					
 				}
 
 				// === BEGIN | END ===
@@ -155,10 +151,7 @@ namespace ft
 				
 				// === CLEAR ===
 				void clear() {
-					if (this->empty() == false)
-					{
-						_tree.btree_clear(_tree._root);
-					}
+					_tree.btree_clear(_tree._root);
 				}
 
 				// === SIZE ===

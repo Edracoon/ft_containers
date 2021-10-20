@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 16:23:15 by bvalette          #+#    #+#             */
-/*   Updated: 2021/10/20 19:24:48 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 20:30:19 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,5 @@ main( void )	{
 		throw std::exception();
 		return (1);
 	}
-	while (1);
 	return (0);
 }

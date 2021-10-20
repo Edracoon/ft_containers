@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 17:20:08 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 19:11:43 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/20 20:40:58 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,10 @@ namespace ft
 							btree_insert(&_root, *first);
 					}
 				}
-
+				
+				~set_rbtree() {
+					this->btree_clear(_root);
+				}
 		private:
 				void create_new_node(node_ptr* node, node_ptr* root,  const T& value)
 				{
@@ -383,6 +386,8 @@ namespace ft
 						y->left->parent = y;
 						y->color = z->color;
 					}
+					_alloc.destroy(z);
+					_alloc.deallocate(z, 1);
 					if (y_orignal_color == BLACK)
 						delete_fixup(x);
 				}
@@ -397,21 +402,16 @@ namespace ft
 				}
 
 				// === CLEAR === //
-				void	btree_clear(node_ptr root)
-				{
-					(void)root;
-					_alloc.destroy(_root);
-					_size	= 0;
+				void	btree_clear(node_ptr node)
+				{	
+					if (node == NIL)
+						return ;
+					btree_clear(node->left);
+					btree_clear(node->right);
+					_alloc.destroy(node);
+					_alloc.deallocate(node, 1);
 					_root	= NIL;
-					
-					// if (root == NIL)
-					// 	return ;
-					// btree_clear(root->left);
-					// btree_clear(root->right);
-					// _alloc.destroy(root);
-					// _alloc.deallocate(root, 1);
-					// _size	= 0;
-					// root	= NIL;
+					_size	= 0;
 				}
 				
 				// === SWAP === //
