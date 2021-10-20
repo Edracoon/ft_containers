@@ -17,15 +17,15 @@ int	main(void)
 	map_test.insert(ft::make_pair(8, "hohoho"));
 	map_test.insert(ft::make_pair(9, "azerty"));
 
-	map_test.print_tree();
+	std::cout << "map_test.size() = " << map_test.size() << std::endl;
 
-	// std::cout << " map_test.size() = " << map_test.size() << std::endl;
+	
 
-	// ft::map<int, std::string>::iterator	it = map_test.begin();
-	// ft::map<int, std::string>::iterator	ite = map_test.end();
+	ft::map<int, std::string>::iterator	it = map_test.begin();
+	ft::map<int, std::string>::iterator	ite = map_test.end();
 
-	// for ( ; it != ite ; ++it)
-	// 	std::cout << "it = [" << it->first << " - " << it->second << "]" << std::endl;
+	for ( ; it != ite ; ++it)
+		std::cout << "it = [" << it->first << " - " << it->second << "]" << std::endl;
 
 	return (0);
 }
