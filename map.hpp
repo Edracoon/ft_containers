@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 20:26:06 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 11:40:15 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,24 +35,24 @@ namespace ft
 				typedef Compare												key_compare;
 				typedef Alloc												allocator_type;
 
-				typedef size_t												size_type;
-				typedef ft::pair<const key_type, mapped_type>				value_type;			// la value deviens une clé et une valeur associé dans une node
+				typedef size_t													size_type;
+				typedef ft::pair<const key_type, mapped_type>					value_type;			// la value deviens une clé et une valeur associé dans une node
 
 				// ALLOCATOR
-				typedef typename allocator_type::reference					reference;			// value_type &
-				typedef typename allocator_type::const_reference			const_reference;	// value_type & const
-				typedef	typename allocator_type::pointer					pointer;			// value_type *
-				typedef typename allocator_type::const_pointer				const_pointer;		// value_type * const
-				typedef	typename allocator_type::difference_type			difference_type;	// usually ptrdiff_t
+				typedef typename allocator_type::reference						reference;			// value_type &
+				typedef typename allocator_type::const_reference				const_reference;	// value_type & const
+				typedef	typename allocator_type::pointer						pointer;			// value_type *
+				typedef typename allocator_type::const_pointer					const_pointer;		// value_type * const
+				typedef	typename allocator_type::difference_type				difference_type;	// usually ptrdiff_t
 
 		protected:
 				typedef	map_rbtree<value_type, key_compare, allocator_type>		btree_type;
 		public:
 				// BIDIRECTIONAL ITERATOR
-				typedef	typename btree_type::iterator						iterator;
-				typedef	typename btree_type::const_iterator					const_iterator;
-				typedef	ft::reverse_iterator<iterator>						reverse_iterator;
-				typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
+				typedef	typename btree_type::iterator							iterator;
+				typedef	typename btree_type::const_iterator						const_iterator;
+				typedef	ft::reverse_iterator<iterator>							reverse_iterator;
+				typedef	ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 
 		public:
 				// Nested class VALUE_COMPARE
@@ -151,6 +151,7 @@ namespace ft
 				key_compare key_comp() const {
 					return _comp;
 				}
+
 				// === VALUE_COMP ===
 				value_compare value_comp() const {
 					return value_compare(_comp);
@@ -201,17 +202,15 @@ namespace ft
 				iterator insert (iterator position, const value_type& val) {
 					(void)position;
 					
-					this->insert(val);
-					iterator	ret = iterator(_tree.btree_find_node(_tree._root, val.first));
-					
-					return (ret);
+					pair<iterator, bool> ret = this->insert(val);
+
+					return (ret.first);
 				}
 
 				// === INSERT 3 ===
 				template <class InputIterator>
 				void insert (InputIterator first, InputIterator last) {
-					for ( ; first != last ; first++)
-					{
+					for ( ; first != last ; first++) {
 						this->_tree.btree_insert(&(_tree._root), *first);
 					}
 				}

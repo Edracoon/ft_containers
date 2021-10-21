@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/13 09:26:49 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 15:47:43 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 11:09:54 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ namespace ft
 		public:
 				// typedef macro
 				typedef T											value_type;
-				typedef value_type*											pointer;
-				typedef value_type&											reference;
+				typedef value_type*									pointer;
+				typedef value_type&									reference;
 				typedef size_t										difference_type;
 				typedef std::bidirectional_iterator_tag				iterator_category;
 				typedef typename ft::node<T>						node;

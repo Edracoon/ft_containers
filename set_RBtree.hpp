@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 17:20:08 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 20:40:58 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 11:50:38 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -438,16 +438,16 @@ namespace ft
 				// == FIND NODE === //
 				node_ptr btree_find_node(node_ptr root, const key_type& k) const
 				{
-					node_ptr	ret;
-					if (root == NIL)
-						return (NIL);
-
-					ret = btree_find_node(root->left, k);
-					if (ret == NIL && !_comp(k, root->value) && !_comp(root->value, k))	// std::less<key>
-						return (root);
-					if (ret == NIL)
-						ret = btree_find_node(root->right, k);
-					return (ret);
+					while (root != NIL)
+					{
+						if (!_comp(k, root->value) && !_comp(root->value, k))	// std::less<key>
+							return (root);
+						if (_comp(k, root->value))
+							root = root->left;
+						else if (!_comp(k, root->value))
+							root = root->right;
+					}
+					return (NIL);
 				}
 
 				// === LEVEL COUNT === //

@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:53:59 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 20:38:43 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 11:45:36 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,10 +191,8 @@ namespace ft
 				iterator insert (iterator position, const value_type& val) {
 					(void)position;
 					
-					this->insert(val);
-					iterator	ret = iterator(_tree.btree_find_node(_tree._root, val));
-					
-					return (ret);
+					pair<iterator, bool> ret = this->insert(val);					
+					return (ret.first);
 				}
 
 				// === INSERT 3 ===

@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:16:33 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/19 09:00:44 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 10:51:20 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,6 +365,8 @@ namespace ft
 				}
 				void insert (iterator position, size_type n, const value_type& val) 		// FILL
 				{
+					if (n > max_size())
+						throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
 					size_type	conserv = position - _startpointer; // stockage de la position dans le cas d'une reallocation
 					if (_startpointer == NULL)
 						this->reserve(n);

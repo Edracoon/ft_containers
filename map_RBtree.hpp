@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:12 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/20 20:29:44 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 11:42:59 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,10 +319,11 @@ namespace ft
 					return (const_iterator(reinterpret_cast<const_node_ptr>(NIL), reinterpret_cast<const_node_ptr>(_get_last())));
 				}
 
-				// === max_size === // 
+				// === MAX_SIZE === // 
 				size_type max_size( void ) const {
 					return (std::numeric_limits<size_type>::max() / (sizeof(node) - sizeof(node_ptr)));
 				}
+
 				// === INSERT === //
 				iterator btree_insert(node_ptr *root, const T& value)
 				{
@@ -431,31 +432,31 @@ namespace ft
 				// === FIND PAIR === //
 				T* btree_find_pair(node_ptr root, const key_type& k) const
 				{
-					T*	ret;
-					if (root == NIL)
-						return (NULL);
-
-					ret = btree_find_pair(root->left, k);
-					if (ret == NULL && !_comp(k, root->value.first) && !_comp(root->value.first, k))	// std::less<key>
-						return &(root->value);
-					if (ret == NULL)
-						ret = btree_find_pair(root->right, k);
-					return (ret);
+					while (root != NIL)
+					{
+						if (!_comp(k, root->value.first) && !_comp(root->value.first, k))	// std::less<key>
+							return &(root->value);
+						if (_comp(k, root->value.first))
+							root = root->left;
+						else if (!_comp(k, root->value.first))
+							root = root->right;
+					}
+					return (NULL);
 				}
-				
+
 				// == FIND NODE === //
 				node_ptr btree_find_node(node_ptr root, const key_type& k) const
 				{
-					node_ptr	ret;
-					if (root == NIL)
-						return (NIL);
-
-					ret = btree_find_node(root->left, k);
-					if (ret == NIL && !_comp(k, root->value.first) && !_comp(root->value.first, k))	// std::less<key>
-						return (root);
-					if (ret == NIL)
-						ret = btree_find_node(root->right, k);
-					return (ret);
+					while (root != NIL)
+					{
+						if (!_comp(k, root->value.first) && !_comp(root->value.first, k))	// std::less<key>
+							return (root);
+						if (_comp(k, root->value.first))
+							root = root->left;
+						else if (!_comp(k, root->value.first))
+							root = root->right;
+					}
+					return (NIL);
 				}
 
 				// === SWAP === //
