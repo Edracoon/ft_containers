@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:47 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/11 11:16:22 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 13:44:23 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,30 @@ namespace ft
 		}
 		return ( first2 != last2 );
 	}
+
+	template<typename T, typename U>
+	struct is_same			// Rentre dedans si c'est un type different
+	{
+		static const bool value = false; 
+	};
+	
+	template<typename T>
+	struct is_same<T, T>		// Rentre dedans si c'est le même type
+	{ 
+		static const bool value = true; 
+	};
+
+	template<bool>
+	struct static_assert_ft
+	{
+		
+	};
+
+	template<>
+	struct static_assert_ft<true>	// Si c'est true la fonction existe et ca compile
+	{
+		static void func() { /* ne sert a rien */ }
+	};
 }
 
 #endif

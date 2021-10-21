@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:41 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/21 10:50:18 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 13:44:27 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ namespace ft
 				container_type		c;
 
 		public:
-				explicit stack (const container_type & ctnr = container_type()) : c(ctnr) {  }
+				explicit stack (const container_type & ctnr = container_type()) : c(ctnr) {
+					ft::static_assert_ft<ft::is_same<T, typename container_type::value_type >::value>::func();	// Si la fonction existe c'est que les deux sont du meme type
+				}
 
 				// Utilisation du container sous-jacent pour toutes les fonctions
 				bool empty() const {

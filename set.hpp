@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/20 16:53:59 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/21 11:45:36 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 15:16:29 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,11 @@ namespace ft
 				// === EQUAL_RANGE ===
 				pair<iterator,iterator> equal_range (const key_type& k) const {
 					return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
+				}
+
+				// === GET_ALLOCATOR ===
+				allocator_type get_allocator() const {
+					return (_alloc);
 				}
 
 				// === OPERATORS === //

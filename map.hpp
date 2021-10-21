@@ -6,7 +6,7 @@
 /*   By: epfennig <epfennig@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/11 11:15:20 by epfennig          #+#    #+#             */
-/*   Updated: 2021/10/21 11:40:15 by epfennig         ###   ########.fr       */
+/*   Updated: 2021/10/21 14:46:18 by epfennig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,12 @@ namespace ft
 					return (ft::make_pair(this->lower_bound(k), this->upper_bound(k)));
 				}
 
-				// === OPERATORS === //
+				// === EQUAL_RANGE ===
+				allocator_type get_allocator() const {
+					return (_alloc);
+				}
+
+				// === OPERATORS ===
 				mapped_type& operator[] (const key_type& k) {
 					return ((this->insert( ft::make_pair(k, mapped_type()) )).first)->second;
 				}

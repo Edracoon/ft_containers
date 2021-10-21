@@ -15,15 +15,29 @@ then
 	rm -f */*.exe
 	rm -f */*/*.o
 
+elif [ ${args[0]} = "vector" ]
+then
+	rm -f */*.exe
+	rm -f */*/*.o
+	make fclean -C ./${args[0]}_tests
+	make TESTER=${args[1]} -C ./${args[0]}_tests
+	echo -e "-=###############=- FT_"${args[1]}" -=###############=-"
+	./${args[0]}_tests/FT_${args[1]}.exe
+	echo -e "-=###############=- STL_"${args[1]}" -=###############=-"
+	./${args[0]}_tests/STL_${args[1]}.exe 
+	rm -f *.log
+	rm -f */*/*.o
+	rm -f */*.exe
+
 elif [ ${args[0]} ]
 then
 	rm -f */*.exe
 	rm -f */*/*.o
 	make fclean -C ./${args[0]}_tests
 	make TESTER=${args[1]} -C ./${args[0]}_tests
-	echo -e "========== FT_"${args[1]}" ==========="
+	echo -e "\n-=###############=- FT_"${args[1]}" -=###############=-\n"
 	./${args[0]}_tests/FT_${args[1]}.exe
-	echo -e "========== STL_"${args[1]}" =========="
+	echo -e "\n-=###############=- STL_"${args[1]}" -=###############=-\n"
 	./${args[0]}_tests/STL_${args[1]}.exe 
 	rm -f *.log
 	rm -f */*/*.o
